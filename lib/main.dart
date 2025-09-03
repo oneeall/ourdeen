@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:ourdeen/features/counter/presentation/views/counter_view.dart';
+import 'package:ourdeen/features/quran_reader/presentation/views/quran_reader_view.dart';
 
+import 'core/theme/theme.dart';
+import 'core/theme/util.dart';
 import 'features/shared/providers.dart';
 
 void main() {
@@ -12,14 +14,19 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = View.of(context).platformDispatcher.platformBrightness;
+
+    TextTheme textTheme = createTextTheme(context, "Noto Sans Anatolian Hieroglyphs", "Noto Sans Anatolian Hieroglyphs");
+    MaterialTheme theme = MaterialTheme(textTheme);
     return Providers(
       child: MaterialApp(
         title: 'Ourdeen DDD MVVM',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          useMaterial3: true,
-        ),
-        home: const CounterView(),
+        // theme: ThemeData(
+        //   colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        //   useMaterial3: true,
+        // ),
+        theme: brightness == Brightness.light ? theme.light() : theme.dark(),
+        home: const QuranReaderView(),
       ),
     );
   }

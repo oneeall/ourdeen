@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:ourdeen/features/counter/domain/entities/counter.dart';
 import 'package:ourdeen/features/counter/domain/usecases/get_counter_usecase.dart';
 import 'package:ourdeen/features/counter/domain/usecases/increment_counter_usecase.dart';
@@ -12,8 +13,8 @@ class CounterViewModel extends BaseViewModel {
   CounterViewModel({
     required GetCounterUseCase getCounterUseCase,
     required IncrementCounterUseCase incrementCounterUseCase,
-  })  : _getCounterUseCase = getCounterUseCase,
-        _incrementCounterUseCase = incrementCounterUseCase;
+  }) : _getCounterUseCase = getCounterUseCase,
+       _incrementCounterUseCase = incrementCounterUseCase;
 
   Counter? get counter => _counter;
 
@@ -27,7 +28,9 @@ class CounterViewModel extends BaseViewModel {
       _counter = await _getCounterUseCase();
     } catch (e) {
       // Handle error
-      print('Error getting counter: $e');
+      if (kDebugMode) {
+        print('Error getting counter: $e');
+      }
     } finally {
       setBusy(false);
     }
@@ -41,7 +44,9 @@ class CounterViewModel extends BaseViewModel {
         notifyListeners();
       } catch (e) {
         // Handle error
-        print('Error incrementing counter: $e');
+        if (kDebugMode) {
+          print('Error incrementing counter: $e');
+        }
       } finally {
         setBusy(false);
       }
