@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:ourdeen/features/memorizing/domain/entities/memorization_session.dart';
 import 'package:provider/provider.dart';
@@ -12,7 +11,8 @@ class MemorizingView extends StatefulWidget {
   State<MemorizingView> createState() => _MemorizingViewState();
 }
 
-class _MemorizingViewState extends State<MemorizingView> with TickerProviderStateMixin {
+class _MemorizingViewState extends State<MemorizingView>
+    with TickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _progressAnimation;
   late Animation<Color?> _colorAnimation;
@@ -25,9 +25,10 @@ class _MemorizingViewState extends State<MemorizingView> with TickerProviderStat
       vsync: this,
     );
 
-    _progressAnimation = Tween<double>(begin: 0, end: 1).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.elasticOut),
-    );
+    _progressAnimation = Tween<double>(
+      begin: 0,
+      end: 1,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.elasticOut));
 
     _colorAnimation = ColorTween(
       begin: Colors.blue.withOpacity(0.3),
@@ -59,27 +60,40 @@ class _MemorizingViewState extends State<MemorizingView> with TickerProviderStat
                   Text(
                     'Memorization Journey',
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
                     decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.primaryContainer,
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Row(
                       children: [
-                        const Icon(Icons.local_fire_department, color: Colors.orange, size: 18),
+                        const Icon(
+                          Icons.local_fire_department,
+                          color: Colors.orange,
+                          size: 18,
+                        ),
                         const SizedBox(width: 4),
                         Builder(
                           builder: (context) {
-                            final sessions = context.select<MemorizingViewModel, List<MemorizationSession>>((vm) => vm.sessions);
+                            final sessions = context
+                                .select<
+                                  MemorizingViewModel,
+                                  List<MemorizationSession>
+                                >((vm) => vm.sessions);
                             return Text(
                               '${_calculateTotalStreak(sessions)}',
-                              style: const TextStyle(fontWeight: FontWeight.bold),
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
                             );
-                          }
+                          },
                         ),
                       ],
                     ),
@@ -107,8 +121,8 @@ class _MemorizingViewState extends State<MemorizingView> with TickerProviderStat
                     Text(
                       'Your Progress',
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     const SizedBox(height: 16),
                     LinearProgressIndicator(
@@ -135,8 +149,8 @@ class _MemorizingViewState extends State<MemorizingView> with TickerProviderStat
                   Text(
                     'Active Sessions',
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   TextButton(
                     onPressed: () {
@@ -233,11 +247,14 @@ class _SessionCard extends StatelessWidget {
                 Text(
                   'Surah ${session.surahNumber}:${session.startVerse}-${session.endVerse}',
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: (session.progress as double) == 1.0
                         ? Colors.green.withOpacity(0.2)
@@ -245,7 +262,9 @@ class _SessionCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
-                    (session.progress as double) == 1.0 ? 'Mastered' : '${((session.progress as double) * 100).toInt()}%',
+                    (session.progress as double) == 1.0
+                        ? 'Mastered'
+                        : '${((session.progress as double) * 100).toInt()}%',
                     style: TextStyle(
                       color: (session.progress as double) == 1.0
                           ? Colors.green
@@ -270,7 +289,9 @@ class _SessionCard extends StatelessWidget {
               children: [
                 Icon(
                   Icons.local_fire_department,
-                  color: (session.streak as int) > 0 ? Colors.orange : Colors.grey,
+                  color: (session.streak as int) > 0
+                      ? Colors.orange
+                      : Colors.grey,
                   size: 18,
                 ),
                 const SizedBox(width: 4),
@@ -281,9 +302,9 @@ class _SessionCard extends StatelessWidget {
                 const Spacer(),
                 Text(
                   'Last practiced: ${_formatDate(session.lastPracticed as DateTime)}',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Colors.grey,
-                      ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodySmall?.copyWith(color: Colors.grey),
                 ),
               ],
             ),
@@ -302,7 +323,7 @@ class _SessionCard extends StatelessWidget {
   String _formatDate(DateTime date) {
     final now = DateTime.now();
     final difference = now.difference(date).inDays;
-    
+
     if (difference == 0) return 'Today';
     if (difference == 1) return 'Yesterday';
     return '$difference days ago';

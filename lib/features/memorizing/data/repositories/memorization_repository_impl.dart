@@ -1,4 +1,3 @@
-import 'dart:math';
 import '../../domain/entities/memorization_session.dart';
 import '../../domain/repositories/memorization_repository.dart';
 
@@ -35,9 +34,13 @@ class MemorizationRepositoryImpl implements MemorizationRepository {
   }
 
   @override
-  Future<MemorizationSession> createSession(int surahNumber, int startVerse, int endVerse) async {
+  Future<MemorizationSession> createSession(
+    int surahNumber,
+    int startVerse,
+    int endVerse,
+  ) async {
     await Future.delayed(const Duration(milliseconds: 300));
-    
+
     final newSession = MemorizationSession(
       id: _sessions.length + 1,
       surahNumber: surahNumber,
@@ -48,15 +51,18 @@ class MemorizationRepositoryImpl implements MemorizationRepository {
       streak: 0,
       progress: 0.0,
     );
-    
+
     _sessions.add(newSession);
     return newSession;
   }
 
   @override
-  Future<MemorizationSession> updateSessionProgress(int sessionId, double progress) async {
+  Future<MemorizationSession> updateSessionProgress(
+    int sessionId,
+    double progress,
+  ) async {
     await Future.delayed(const Duration(milliseconds: 300));
-    
+
     final index = _sessions.indexWhere((session) => session.id == sessionId);
     if (index != -1) {
       final session = _sessions[index];
@@ -72,14 +78,14 @@ class MemorizationRepositoryImpl implements MemorizationRepository {
       );
       return _sessions[index];
     }
-    
+
     throw Exception('Session not found');
   }
 
   @override
   Future<MemorizationSession> updateSessionStreak(int sessionId) async {
     await Future.delayed(const Duration(milliseconds: 300));
-    
+
     final index = _sessions.indexWhere((session) => session.id == sessionId);
     if (index != -1) {
       final session = _sessions[index];
@@ -95,7 +101,7 @@ class MemorizationRepositoryImpl implements MemorizationRepository {
       );
       return _sessions[index];
     }
-    
+
     throw Exception('Session not found');
   }
 
