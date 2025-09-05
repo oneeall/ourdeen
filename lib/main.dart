@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ourdeen/features/quran_reader/presentation/views/quran_reader_view.dart';
+import 'package:ourdeen/features/memorizing/presentation/views/memorizing_view.dart';
 
 import 'core/theme/theme.dart';
 import 'core/theme/util.dart';
@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
         //   useMaterial3: true,
         // ),
         theme: brightness == Brightness.light ? theme.light() : theme.dark(),
-        home: const QuranReaderView(),
+        home: const MemorizingView(),
       ),
     );
   }

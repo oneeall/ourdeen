@@ -9,6 +9,13 @@ import 'package:ourdeen/features/quran_reader/data/repositories/quran_repository
 import 'package:ourdeen/features/quran_reader/domain/repositories/quran_repository.dart';
 import 'package:ourdeen/features/quran_reader/domain/usecases/get_verses_usecase.dart';
 import 'package:ourdeen/features/quran_reader/presentation/viewmodels/quran_reader_viewmodel.dart';
+import 'package:ourdeen/features/memorizing/data/repositories/memorization_repository_impl.dart';
+import 'package:ourdeen/features/memorizing/domain/repositories/memorization_repository.dart';
+import 'package:ourdeen/features/memorizing/domain/usecases/get_sessions_usecase.dart';
+import 'package:ourdeen/features/memorizing/domain/usecases/create_session_usecase.dart';
+import 'package:ourdeen/features/memorizing/domain/usecases/update_session_progress_usecase.dart';
+import 'package:ourdeen/features/memorizing/domain/usecases/update_session_streak_usecase.dart';
+import 'package:ourdeen/features/memorizing/presentation/viewmodels/memorizing_viewmodel.dart';
 
 class Providers extends StatelessWidget {
   final Widget child;
@@ -53,6 +60,39 @@ class Providers extends StatelessWidget {
           create: (context) => QuranReaderViewModel(
             context.read<GetVersesUseCase>(),
           )..loadVerses(),
+        ),
+        
+        // Memorizing feature providers
+        Provider<MemorizationRepository>(
+          create: (_) => MemorizationRepositoryImpl(),
+        ),
+        Provider<GetSessionsUseCase>(
+          create: (context) => GetSessionsUseCase(
+            context.read<MemorizationRepository>(),
+          ),
+        ),
+        Provider<CreateSessionUseCase>(
+          create: (context) => CreateSessionUseCase(
+            context.read<MemorizationRepository>(),
+          ),
+        ),
+        Provider<UpdateSessionProgressUseCase>(
+          create: (context) => UpdateSessionProgressUseCase(
+            context.read<MemorizationRepository>(),
+          ),
+        ),
+        Provider<UpdateSessionStreakUseCase>(
+          create: (context) => UpdateSessionStreakUseCase(
+            context.read<MemorizationRepository>(),
+          ),
+        ),
+        ChangeNotifierProvider<MemorizingViewModel>(
+          create: (context) => MemorizingViewModel(
+            context.read<GetSessionsUseCase>(),
+            context.read<CreateSessionUseCase>(),
+            context.read<UpdateSessionProgressUseCase>(),
+            context.read<UpdateSessionStreakUseCase>(),
+          )..loadSessions(),
         ),
       ],
       child: child,

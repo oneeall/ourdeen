@@ -28,7 +28,29 @@ lib/
 │   │   └── presentation/     # Presentation layer for this feature
 │   │       ├── viewmodels/   # View models
 │   │       └── views/        # UI components
-│   ├── shared/              # These are shared business concepts
+│   ├── quran_reader/         # Quran reading feature
+│   │   ├── data/             # Data layer for this feature
+│   │   │   ├── models/       # Data models (DTOs)
+│   │   │   └── repositories/ # Repository implementations
+│   │   ├── domain/           # Domain layer for this feature
+│   │   │   ├── entities/     # Domain entities
+│   │   │   ├── repositories/ # Repository interfaces
+│   │   │   └── usecases/     # Business use cases
+│   │   └── presentation/     # Presentation layer for this feature
+│   │       ├── viewmodels/   # View models
+│   │       └── views/        # UI components
+│   ├── memorizing/           # Gamified memorization feature
+│   │   ├── data/             # Data layer for this feature
+│   │   │   ├── models/       # Data models (DTOs)
+│   │   │   └── repositories/ # Repository implementations
+│   │   ├── domain/           # Domain layer for this feature
+│   │   │   ├── entities/     # Domain entities
+│   │   │   ├── repositories/ # Repository interfaces
+│   │   │   └── usecases/     # Business use cases
+│   │   └── presentation/     # Presentation layer for this feature
+│   │       ├── viewmodels/   # View models
+│   │       └── views/        # UI components
+│   ├── shared/               # These are shared business concepts
 │   │   ├── data/             # Data layer for this feature
 │   │   │   ├── models/       # Data models (DTOs) like user_model.dart, product_model.dart, order_model.dart, profile_model.dart, etc
 │   └── ...                   # Other features
@@ -64,6 +86,21 @@ Ownership           Platform team            Product/Feature teams
    - Changes to one feature have minimal impact on others
    - Easier to test features in isolation
    - Clear boundaries between components
+
+## Current Features
+
+### 1. Quran Reader
+A clean, minimalist interface for reading Quran verses with appropriate typography and smooth animations. Currently displays Surah Al-Fatihah with beautiful styling.
+
+### 2. Memorizing
+A gamified memorization feature that helps users memorize Quran verses through interactive sessions with:
+- Progress tracking
+- Streak counters
+- Session management
+- Visual feedback
+- Reward mechanisms
+
+See [Memorizing Feature Documentation](lib/features/memorizing/README.md) for detailed information.
 
 ## Layer Details
 
