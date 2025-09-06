@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:flutter/foundation.dart';
 import 'package:ourdeen/features/shared/base_viewmodel.dart';
 import '../../domain/entities/memorization_session.dart';
 import '../../domain/usecases/get_sessions_usecase.dart';
@@ -41,7 +42,9 @@ class MemorizingViewModel extends BaseViewModel {
     try {
       _sessions = await _getSessionsUseCase();
     } catch (e) {
-      print('Error loading sessions: $e');
+      if (kDebugMode) {
+        print('Error loading sessions: $e');
+      }
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -63,7 +66,9 @@ class MemorizingViewModel extends BaseViewModel {
       _sessions = UnmodifiableListView([..._sessions, newSession]);
       notifyListeners();
     } catch (e) {
-      print('Error creating session: $e');
+      if (kDebugMode) {
+        print('Error creating session: $e');
+      }
     }
   }
 
@@ -81,7 +86,9 @@ class MemorizingViewModel extends BaseViewModel {
         notifyListeners();
       }
     } catch (e) {
-      print('Error updating progress: $e');
+      if (kDebugMode) {
+        print('Error updating progress: $e');
+      }
     }
   }
 
@@ -94,7 +101,9 @@ class MemorizingViewModel extends BaseViewModel {
         notifyListeners();
       }
     } catch (e) {
-      print('Error updating streak: $e');
+      if (kDebugMode) {
+        print('Error updating streak: $e');
+      }
     }
   }
 

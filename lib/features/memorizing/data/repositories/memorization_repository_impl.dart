@@ -81,8 +81,8 @@ class MemorizationRepositoryImpl implements MemorizationRepository {
     if (index != -1) {
       final session = _sessions[index];
 
-      final _sessionsList = _sessions.toList();
-      _sessionsList[index] = MemorizationSession(
+      final sessionList = _sessions.toList();
+      sessionList[index] = MemorizationSession(
         id: session.id,
         surahNumber: session.surahNumber,
         startVerse: session.startVerse,
@@ -93,7 +93,7 @@ class MemorizationRepositoryImpl implements MemorizationRepository {
         progress: progress,
       );
 
-      _sessions = UnmodifiableListView(_sessionsList);
+      _sessions = UnmodifiableListView(sessionList);
       return _sessions[index];
     }
 

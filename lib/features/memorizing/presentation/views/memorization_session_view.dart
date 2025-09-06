@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ourdeen/features/memorizing/presentation/viewmodels/memorizing_viewmodel.dart';

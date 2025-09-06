@@ -31,8 +31,8 @@ class _MemorizingViewState extends State<MemorizingView>
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.elasticOut));
 
     _colorAnimation = ColorTween(
-      begin: Colors.blue.withOpacity(0.3),
-      end: Colors.green.withOpacity(0.8),
+      begin: Colors.blue.withValues(alpha: 0.3),
+      end: Colors.green.withValues(alpha: 0.8),
     ).animate(_controller);
   }
 
@@ -108,7 +108,7 @@ class _MemorizingViewState extends State<MemorizingView>
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
+                      color: Colors.black.withValues(alpha:0.05),
                       blurRadius: 10,
                       offset: const Offset(0, 4),
                     ),
@@ -253,7 +253,7 @@ class _SessionCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha: .05),
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),
@@ -278,7 +278,7 @@ class _SessionCard extends StatelessWidget {
                   ),
                   decoration: BoxDecoration(
                     color: (session.progress as double) == 1.0
-                        ? Colors.green.withOpacity(0.2)
+                        ? Colors.green.withValues(alpha:0.2)
                         : Theme.of(context).colorScheme.primaryContainer,
                     borderRadius: BorderRadius.circular(12),
                   ),
