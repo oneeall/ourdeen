@@ -1,36 +1,50 @@
+import 'dart:collection';
+
 import '../../domain/entities/memorization_session.dart';
 import '../../domain/repositories/memorization_repository.dart';
 
 class MemorizationRepositoryImpl implements MemorizationRepository {
   // In a real app, this would be stored in a database or fetched from an API
-  final List<MemorizationSession> _sessions = [
-    MemorizationSession(
-      id: 1,
-      surahNumber: 1,
-      startVerse: 1,
-      endVerse: 7,
-      createdAt: DateTime.now().subtract(const Duration(days: 5)),
-      lastPracticed: DateTime.now().subtract(const Duration(days: 1)),
-      streak: 3,
-      progress: 0.8,
-    ),
-    MemorizationSession(
-      id: 2,
-      surahNumber: 112,
-      startVerse: 1,
-      endVerse: 4,
-      createdAt: DateTime.now().subtract(const Duration(days: 10)),
-      lastPracticed: DateTime.now().subtract(const Duration(days: 2)),
-      streak: 5,
-      progress: 1.0,
-    ),
-  ];
+
+  UnmodifiableListView<MemorizationSession> _sessions =
+      UnmodifiableListView([
+        MemorizationSession(
+          id: 1,
+          surahNumber: 1,
+          startVerse: 1,
+          endVerse: 7,
+          createdAt: DateTime.now().subtract(const Duration(days: 5)),
+          lastPracticed: DateTime.now().subtract(const Duration(days: 1)),
+          streak: 3,
+          progress: 0.8,
+        ),
+        MemorizationSession(
+          id: 2,
+          surahNumber: 112,
+          startVerse: 1,
+          endVerse: 4,
+          createdAt: DateTime.now().subtract(const Duration(days: 10)),
+          lastPracticed: DateTime.now().subtract(const Duration(days: 2)),
+          streak: 5,
+          progress: 1.0,
+        ),
+        MemorizationSession(
+          id: 3,
+          surahNumber: 48,
+          startVerse: 1,
+          endVerse: 3,
+          createdAt: DateTime.now().subtract(const Duration(days: 2,)),
+          lastPracticed: DateTime.now().subtract(const Duration(days: 1,)),
+          streak: 0,
+          progress: 0.0,
+        )
+      ]);
 
   @override
-  Future<List<MemorizationSession>> getSessions() async {
+  Future<UnmodifiableListView<MemorizationSession>> getSessions() async {
     // Simulate network delay
     await Future.delayed(const Duration(milliseconds: 300));
-    return _sessions;
+    return UnmodifiableListView(_sessions);
   }
 
   @override
@@ -52,7 +66,7 @@ class MemorizationRepositoryImpl implements MemorizationRepository {
       progress: 0.0,
     );
 
-    _sessions.add(newSession);
+    _sessions = UnmodifiableListView([..._sessions, newSession]);
     return newSession;
   }
 
@@ -66,7 +80,9 @@ class MemorizationRepositoryImpl implements MemorizationRepository {
     final index = _sessions.indexWhere((session) => session.id == sessionId);
     if (index != -1) {
       final session = _sessions[index];
-      _sessions[index] = MemorizationSession(
+
+      final _sessionsList = _sessions.toList();
+      _sessionsList[index] = MemorizationSession(
         id: session.id,
         surahNumber: session.surahNumber,
         startVerse: session.startVerse,
@@ -76,6 +92,8 @@ class MemorizationRepositoryImpl implements MemorizationRepository {
         streak: session.streak,
         progress: progress,
       );
+
+      _sessions = UnmodifiableListView(_sessionsList);
       return _sessions[index];
     }
 

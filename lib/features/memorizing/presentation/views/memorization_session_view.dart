@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ourdeen/features/memorizing/presentation/viewmodels/memorizing_viewmodel.dart';
@@ -17,7 +19,8 @@ class MemorizationSessionView extends StatefulWidget {
   });
 
   @override
-  State<MemorizationSessionView> createState() => _MemorizationSessionViewState();
+  State<MemorizationSessionView> createState() =>
+      _MemorizationSessionViewState();
 }
 
 class _MemorizationSessionViewState extends State<MemorizationSessionView>
@@ -25,6 +28,7 @@ class _MemorizationSessionViewState extends State<MemorizationSessionView>
   late AnimationController _controller;
   late Animation<double> _progressAnimation;
   late Animation<Offset> _slideAnimation;
+  late Animation<double> _fadeAnimation;
 
   double _progress = 0.0;
   int _currentStep = 0;
@@ -35,7 +39,8 @@ class _MemorizationSessionViewState extends State<MemorizationSessionView>
     // Surah Al-Fatihah (QS 1:1-7)
     {
       'arabic': 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ',
-      'translation': 'In the name of Allah, the Entirely Merciful, the Especially Merciful.',
+      'translation':
+          'In the name of Allah, the Entirely Merciful, the Especially Merciful.',
     },
     {
       'arabic': 'الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ',
@@ -58,7 +63,8 @@ class _MemorizationSessionViewState extends State<MemorizationSessionView>
       'translation': 'Guide us to the straight path -',
     },
     {
-      'arabic': 'صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ',
+      'arabic':
+          'صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ',
       'translation':
           'The path of those upon whom You have bestowed favor, not of those who have evoked [Your] anger or of those who are astray.',
     },
@@ -79,6 +85,21 @@ class _MemorizationSessionViewState extends State<MemorizationSessionView>
       'arabic': 'وَلَمْ يَكُن لَّهُ كُفُوًا أَحَدٌ',
       'translation': 'Nor is there to Him any equivalent."',
     },
+    // Surat Al-Fath (QS 48 : 1-3)
+    {
+      'arabic': 'إِنَّا فَتَحْنَا لَكَ فَتْحًۭا مُّبِينًۭا',
+      'translation': 'Indeed, We have granted you a clear triumph O Prophet',
+    },
+    {
+      'arabic':
+          'لِّيَغْفِرَ لَكَ ٱللَّهُ مَا تَقَدَّمَ مِن ذَنۢبِكَ وَمَا تَأَخَّرَ وَيُتِمَّ نِعْمَتَهُۥ عَلَيْكَ وَيَهْدِيَكَ صِرَٰطًۭا مُّسْتَقِيمًۭا',
+      'translation':
+          'so that Allah may forgive you for your past and future shortcomings,1 perfect His favour upon you, guide you along the Straight Path,',
+    },
+    {
+      'arabic': 'وَيَنصُرَكَ ٱللَّهُ نَصْرًا عَزِيزًا',
+      'translation': 'and so that Allah will help you tremendously',
+    },
   ];
 
   @override
@@ -89,17 +110,20 @@ class _MemorizationSessionViewState extends State<MemorizationSessionView>
       vsync: this,
     );
 
-    _progressAnimation = Tween<double>(begin: 0, end: 1).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.elasticOut),
-    );
+    _progressAnimation = Tween<double>(
+      begin: 0,
+      end: 1,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.elasticOut));
+
+    _fadeAnimation = Tween<double>(
+      begin: 0,
+      end: 1,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
     _slideAnimation = Tween<Offset>(
       begin: const Offset(1, 0),
       end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeInOut,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
     _loadVerses();
   }
@@ -112,18 +136,31 @@ class _MemorizationSessionViewState extends State<MemorizationSessionView>
 
   void _loadVerses() {
     // Determine which surah and verses to load
-    if (widget.surahNumber == 1 && widget.startVerse == 1 && widget.endVerse == 7) {
+    if (widget.surahNumber == 1 &&
+        widget.startVerse == 1 &&
+        widget.endVerse == 7) {
       // Surah Al-Fatihah
       _verses = _surahData.sublist(0, 7).map((v) => v['arabic']!).toList();
-      _translations = _surahData.sublist(0, 7).map((v) => v['translation']!).toList();
-    } else if (widget.surahNumber == 112 && widget.startVerse == 1 && widget.endVerse == 4) {
+      _translations = _surahData
+          .sublist(0, 7)
+          .map((v) => v['translation']!)
+          .toList();
+    } else if (widget.surahNumber == 112 &&
+        widget.startVerse == 1 &&
+        widget.endVerse == 4) {
       // Surah Al-Ikhlas
       _verses = _surahData.sublist(7, 11).map((v) => v['arabic']!).toList();
-      _translations = _surahData.sublist(7, 11).map((v) => v['translation']!).toList();
+      _translations = _surahData
+          .sublist(7, 11)
+          .map((v) => v['translation']!)
+          .toList();
     } else {
       // Default to Al-Fatihah if not found
-      _verses = _surahData.sublist(0, 7).map((v) => v['arabic']!).toList();
-      _translations = _surahData.sublist(0, 7).map((v) => v['translation']!).toList();
+      _verses = _surahData.sublist(11, 14).map((v) => v['arabic']!).toList();
+      _translations = _surahData
+          .sublist(11, 14)
+          .map((v) => v['translation']!)
+          .toList();
     }
 
     _progress = 1.0 / _verses.length;
@@ -160,12 +197,15 @@ class _MemorizationSessionViewState extends State<MemorizationSessionView>
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
           title: const Text('Congratulations!'),
           content: const Text('You have completed memorizing this section.'),
           actions: [
             TextButton(
               onPressed: () {
+                /// TODO : set proper navigation rather than double call navigator pop
                 Navigator.of(context).pop();
                 Navigator.of(context).pop(); // Go back to memorizing view
               },
@@ -184,8 +224,6 @@ class _MemorizationSessionViewState extends State<MemorizationSessionView>
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = Provider.of<MemorizingViewModel>(context);
-
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -227,10 +265,10 @@ class _MemorizationSessionViewState extends State<MemorizationSessionView>
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
-                  'Surah ${widget.surahNumber}:${widget.startVerse}-${widget.endVerse}',
+                  'Surah ${widget.surahNumber}:${widget.startVerse}-${widget.endVerse} (${_currentStep + 1})',
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                    fontWeight: FontWeight.bold,
+                  ),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -238,30 +276,95 @@ class _MemorizationSessionViewState extends State<MemorizationSessionView>
 
               // Current verse display
               Expanded(
-                child: SlideTransition(
-                  position: _slideAnimation,
+                child: FadeTransition(
+                  opacity: _fadeAnimation,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      // Arabic text
-                      Text(
-                        _verses[_currentStep],
-                        style: const TextStyle(
-                          fontSize: 32,
-                          fontFamily: 'Amiri', // Use a traditional Arabic font
-                          height: 2.0,
+                      // Arabic verse
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0,
                         ),
-                        textAlign: TextAlign.center,
+                        child: Text(
+                          _verses[_currentStep],
+                          style: TextStyle(
+                            fontSize: 34,
+                            fontFamily: 'Amiri',
+                            height: 2.2,
+                            fontWeight: FontWeight.w500,
+                            color:
+                                Theme.of(context).brightness ==
+                                    Brightness.dark
+                                ? Colors.white
+                                : Colors.black87,
+                            shadows:
+                                Theme.of(context).brightness ==
+                                    Brightness.dark
+                                ? [
+                                    Shadow(
+                                      color: Colors.black54,
+                                      offset: Offset(1.5, 1.5),
+                                      blurRadius: 3,
+                                    ),
+                                    Shadow(
+                                      color: Colors.white24,
+                                      offset: Offset(0, 0),
+                                      blurRadius: 4,
+                                    ),
+                                  ]
+                                : [
+                                    Shadow(
+                                      color: Colors.black26,
+                                      offset: Offset(1.5, 1.5),
+                                      blurRadius: 3,
+                                    ),
+                                    Shadow(
+                                      color: Colors.white70,
+                                      offset: Offset(0, 0),
+                                      blurRadius: 4,
+                                    ),
+                                  ],
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
                       ),
-                      const SizedBox(height: 24),
+
+                      const SizedBox(height: 20),
+
+                      // Divider for cognitive separation
+                      Container(
+                        width: 60,
+                        height: 2,
+                        color:
+                            Theme.of(context).brightness == Brightness.dark
+                            ? Colors.white24
+                            : Colors.black26,
+                      ),
+
+                      const SizedBox(height: 20),
+
                       // Translation
-                      Text(
-                        _translations[_currentStep],
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              fontStyle: FontStyle.italic,
-                              color: Colors.grey[600],
-                            ),
-                        textAlign: TextAlign.center,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 24.0,
+                        ),
+                        child: Text(
+                          _translations[_currentStep],
+                          style: Theme.of(context).textTheme.bodyLarge
+                              ?.copyWith(
+                                fontStyle: FontStyle.italic,
+                                fontSize: 18,
+                                height: 1.6,
+                                color:
+                                    Theme.of(context).brightness ==
+                                        Brightness.dark
+                                    ? Colors.grey[300]
+                                    : Colors.grey[700],
+                              ),
+                          textAlign: TextAlign.center,
+                        ),
                       ),
                     ],
                   ),

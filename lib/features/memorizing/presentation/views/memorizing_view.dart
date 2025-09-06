@@ -44,8 +44,6 @@ class _MemorizingViewState extends State<MemorizingView>
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = Provider.of<MemorizingViewModel>(context);
-
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -116,28 +114,32 @@ class _MemorizingViewState extends State<MemorizingView>
                     ),
                   ],
                 ),
-                child: Column(
-                  children: [
-                    Text(
-                      'Your Progress',
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    LinearProgressIndicator(
-                      value: _calculateOverallProgress(viewModel.sessions),
-                      backgroundColor: Colors.grey[300],
-                      color: Theme.of(context).colorScheme.primary,
-                      minHeight: 12,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      '${(_calculateOverallProgress(viewModel.sessions) * 100).toStringAsFixed(0)}% Complete',
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                  ],
+                child: Builder(
+                  builder: (context) {
+                    final viewModel = Provider.of<MemorizingViewModel>(context);
+                    return Column(
+                      children: [
+                        Text(
+                          'Your Progress',
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 16),
+                        LinearProgressIndicator(
+                          value: _calculateOverallProgress(viewModel.sessions),
+                          backgroundColor: Colors.grey[300],
+                          color: Theme.of(context).colorScheme.primary,
+                          minHeight: 12,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          '${(_calculateOverallProgress(viewModel.sessions) * 100).toStringAsFixed(0)}% Complete',
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
+                      ],
+                    );
+                  },
                 ),
               ),
               const SizedBox(height: 24),
@@ -155,6 +157,11 @@ class _MemorizingViewState extends State<MemorizingView>
                   TextButton(
                     onPressed: () {
                       // TODO: Implement add new session
+                      context.read<MemorizingViewModel>().createNewSession(
+                        48,
+                        1,
+                        3,
+                      );
                     },
                     child: const Text('New Session'),
                   ),
@@ -163,31 +170,45 @@ class _MemorizingViewState extends State<MemorizingView>
               const SizedBox(height: 16),
 
               // Sessions list
-              Expanded(
-                child: viewModel.isLoading
-                    ? const Center(child: CircularProgressIndicator())
-                    : ListView.builder(
-                        itemCount: viewModel.sessions.length,
-                        itemBuilder: (context, index) {
-                          final session = viewModel.sessions[index];
-                          return _SessionCard(
-                            session: session,
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => MemorizationSessionView(
-                                    sessionId: session.id,
-                                    surahNumber: session.surahNumber,
-                                    startVerse: session.startVerse,
-                                    endVerse: session.endVerse,
-                                  ),
-                                ),
+              Builder(
+                builder: (context) {
+
+                  final sessions = context
+                      .select<MemorizingViewModel, List<MemorizationSession>>(
+                        (vm) => vm.sessions,
+                  );
+                  final isLoading = context.select<MemorizingViewModel, bool>(
+                    (vm) => vm.isLoading,
+                  );
+
+                  return Expanded(
+                    child: isLoading
+                        ? const Center(child: CircularProgressIndicator())
+                        : ListView.builder(
+                            itemCount: sessions.length,
+                            itemBuilder: (context, index) {
+                              final session = sessions[index];
+                              return _SessionCard(
+                                session: session,
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          MemorizationSessionView(
+                                            sessionId: session.id,
+                                            surahNumber: session.surahNumber,
+                                            startVerse: session.startVerse,
+                                            endVerse: session.endVerse,
+                                          ),
+                                    ),
+                                  );
+                                },
                               );
                             },
-                          );
-                        },
-                      ),
+                          ),
+                  );
+                },
               ),
             ],
           ),

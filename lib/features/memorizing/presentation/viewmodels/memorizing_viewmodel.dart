@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:ourdeen/features/shared/base_viewmodel.dart';
 import '../../domain/entities/memorization_session.dart';
 import '../../domain/usecases/get_sessions_usecase.dart';
@@ -10,14 +12,19 @@ class MemorizingViewModel extends BaseViewModel {
   final CreateSessionUseCase _createSessionUseCase;
   final UpdateSessionProgressUseCase _updateSessionProgressUseCase;
   final UpdateSessionStreakUseCase _updateSessionStreakUseCase;
-  
-  List<MemorizationSession> _sessions = [];
+
+  UnmodifiableListView<MemorizationSession> _sessions = UnmodifiableListView(
+    [],
+  );
+
   List<MemorizationSession> get sessions => _sessions;
-  
+
   bool _isLoading = false;
+
   bool get isLoading => _isLoading;
-  
+
   double _currentProgress = 0.0;
+
   double get currentProgress => _currentProgress;
 
   MemorizingViewModel(
@@ -30,7 +37,7 @@ class MemorizingViewModel extends BaseViewModel {
   Future<void> loadSessions() async {
     _isLoading = true;
     notifyListeners();
-    
+
     try {
       _sessions = await _getSessionsUseCase();
     } catch (e) {
@@ -41,10 +48,19 @@ class MemorizingViewModel extends BaseViewModel {
     }
   }
 
-  Future<void> createNewSession(int surahNumber, int startVerse, int endVerse) async {
+  Future<void> createNewSession(
+    int surahNumber,
+    int startVerse,
+    int endVerse,
+  ) async {
     try {
-      final newSession = await _createSessionUseCase(surahNumber, startVerse, endVerse);
-      _sessions.add(newSession);
+      final newSession = await _createSessionUseCase(
+        surahNumber,
+        startVerse,
+        endVerse,
+      );
+
+      _sessions = UnmodifiableListView([..._sessions, newSession]);
       notifyListeners();
     } catch (e) {
       print('Error creating session: $e');
@@ -53,10 +69,15 @@ class MemorizingViewModel extends BaseViewModel {
 
   Future<void> updateProgress(int sessionId, double progress) async {
     try {
-      final updatedSession = await _updateSessionProgressUseCase(sessionId, progress);
+      final updatedSession = await _updateSessionProgressUseCase(
+        sessionId,
+        progress,
+      );
       final index = _sessions.indexWhere((session) => session.id == sessionId);
       if (index != -1) {
-        _sessions[index] = updatedSession;
+        final listTemp = _sessions.toList();
+        listTemp[index] = updatedSession;
+        _sessions = UnmodifiableListView(listTemp);
         notifyListeners();
       }
     } catch (e) {

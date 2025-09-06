@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import '../entities/memorization_session.dart';
 import '../repositories/memorization_repository.dart';
 
@@ -6,7 +8,7 @@ class GetSessionsUseCase {
 
   GetSessionsUseCase(this._memorizationRepository);
 
-  Future<List<MemorizationSession>> call() {
+  Future<UnmodifiableListView<MemorizationSession>> call() {
     return _memorizationRepository.getSessions();
   }
 }
