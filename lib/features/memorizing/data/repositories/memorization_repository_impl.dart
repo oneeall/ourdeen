@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
 import '../../domain/entities/memorization_session.dart';
@@ -67,6 +65,7 @@ class MemorizationRepositoryImpl implements MemorizationRepository {
       progress: 0.0,
     );
 
+    _sessions = [..._sessions, newSession].toIList();
     _sessions.add(newSession);
     return newSession;
   }
@@ -153,6 +152,7 @@ class MemorizationRepositoryImpl implements MemorizationRepository {
   @override
   Future<void> deleteSession(int sessionId) async {
     await Future.delayed(const Duration(milliseconds: 300));
-    _sessions.removeWhere((session) => session.id == sessionId);
+    var removedList = _sessions.removeWhere((session) => session.id == sessionId);
+    _sessions = removedList.toIList();
   }
 }

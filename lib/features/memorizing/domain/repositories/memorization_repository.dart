@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
 import '../entities/memorization_session.dart';
