@@ -8,7 +8,7 @@ class MemorizationSessionModel {
   final int streak;
   final double progress;
 
-  MemorizationSessionModel({
+  const MemorizationSessionModel({
     required this.id,
     required this.surahNumber,
     required this.startVerse,

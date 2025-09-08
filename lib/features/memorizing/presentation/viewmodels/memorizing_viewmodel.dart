@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:flutter/foundation.dart';
 import 'package:ourdeen/features/shared/base_viewmodel.dart';
 import '../../domain/entities/memorization_session.dart';
@@ -14,11 +15,9 @@ class MemorizingViewModel extends BaseViewModel {
   final UpdateSessionProgressUseCase _updateSessionProgressUseCase;
   final UpdateSessionStreakUseCase _updateSessionStreakUseCase;
 
-  UnmodifiableListView<MemorizationSession> _sessions = UnmodifiableListView(
-    [],
-  );
+  IList<MemorizationSession> _sessions = const IList.empty();
 
-  List<MemorizationSession> get sessions => _sessions;
+  IList<MemorizationSession> get sessions => _sessions;
 
   bool _isLoading = false;
 
@@ -63,7 +62,7 @@ class MemorizingViewModel extends BaseViewModel {
         endVerse,
       );
 
-      _sessions = UnmodifiableListView([..._sessions, newSession]);
+      _sessions = [..._sessions, newSession].toIList();
       notifyListeners();
     } catch (e) {
       if (kDebugMode) {
@@ -82,7 +81,7 @@ class MemorizingViewModel extends BaseViewModel {
       if (index != -1) {
         final listTemp = _sessions.toList();
         listTemp[index] = updatedSession;
-        _sessions = UnmodifiableListView(listTemp);
+        _sessions = listTemp.toIList();
         notifyListeners();
       }
     } catch (e) {
@@ -95,11 +94,10 @@ class MemorizingViewModel extends BaseViewModel {
   Future<void> incrementStreak(int sessionId) async {
     try {
       final updatedSession = await _updateSessionStreakUseCase(sessionId);
-      final index = _sessions.indexWhere((session) => session.id == sessionId);
-      if (index != -1) {
-        _sessions[index] = updatedSession;
-        notifyListeners();
-      }
+      _sessions = _sessions
+          .map((e) => e.id == updatedSession.id ? updatedSession : e)
+          .toIList();
+      notifyListeners();
     } catch (e) {
       if (kDebugMode) {
         print('Error updating streak: $e');

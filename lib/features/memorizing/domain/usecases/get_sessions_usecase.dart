@@ -1,4 +1,4 @@
-import 'dart:collection';
+import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 
 import '../entities/memorization_session.dart';
 import '../repositories/memorization_repository.dart';
@@ -8,7 +8,7 @@ class GetSessionsUseCase {
 
   GetSessionsUseCase(this._memorizationRepository);
 
-  Future<UnmodifiableListView<MemorizationSession>> call() {
+  Future<IList<MemorizationSession>> call() {
     return _memorizationRepository.getSessions();
   }
 }

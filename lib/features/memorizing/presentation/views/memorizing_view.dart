@@ -1,3 +1,4 @@
+import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:flutter/material.dart';
 import 'package:ourdeen/features/memorizing/domain/entities/memorization_session.dart';
 import 'package:provider/provider.dart';
@@ -83,7 +84,7 @@ class _MemorizingViewState extends State<MemorizingView>
                             final sessions = context
                                 .select<
                                   MemorizingViewModel,
-                                  List<MemorizationSession>
+                                  IList<MemorizationSession>
                                 >((vm) => vm.sessions);
                             return Text(
                               '${_calculateTotalStreak(sessions)}',
@@ -174,7 +175,7 @@ class _MemorizingViewState extends State<MemorizingView>
                 builder: (context) {
 
                   final sessions = context
-                      .select<MemorizingViewModel, List<MemorizationSession>>(
+                      .select<MemorizingViewModel, IList<MemorizationSession>>(
                         (vm) => vm.sessions,
                   );
                   final isLoading = context.select<MemorizingViewModel, bool>(
@@ -217,7 +218,7 @@ class _MemorizingViewState extends State<MemorizingView>
     );
   }
 
-  double _calculateOverallProgress(List sessions) {
+  double _calculateOverallProgress(IList sessions) {
     if (sessions.isEmpty) return 0.0;
     double totalProgress = 0.0;
     for (var session in sessions) {
@@ -226,7 +227,7 @@ class _MemorizingViewState extends State<MemorizingView>
     return totalProgress / sessions.length;
   }
 
-  int _calculateTotalStreak(List sessions) {
+  int _calculateTotalStreak(IList sessions) {
     int totalStreak = 0;
     for (var session in sessions) {
       totalStreak += session.streak as int;
