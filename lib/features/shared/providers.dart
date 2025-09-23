@@ -81,6 +81,15 @@ class Providers extends StatelessWidget {
             context.read<MemorizationRepository>(),
           ),
         ),
+
+        Provider<MemorizationRepositoryLocalImp>(
+          create: (_) => MemorizationRepositoryLocalImp(),
+        ),
+        Provider<UpdateSessionLocalProgressUseCase>(
+          create: (context) => UpdateSessionLocalProgressUseCase(
+            context.read<MemorizationRepositoryLocalImp>()
+          ),
+        ),
         Provider<UpdateSessionStreakUseCase>(
           create: (context) => UpdateSessionStreakUseCase(
             context.read<MemorizationRepository>(),

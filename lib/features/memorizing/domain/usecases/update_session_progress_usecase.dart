@@ -10,3 +10,12 @@ class UpdateSessionProgressUseCase {
     return _memorizationRepository.updateSessionProgress(sessionId, progress);
   }
 }
+
+class UpdateSessionLocalProgressUseCase {
+  final MemorizationRepository _memorizationRepository;
+  UpdateSessionLocalProgressUseCase(this._memorizationRepository);
+
+  Future<void> call(int sessionId, double progress) {
+    return _memorizationRepository.updateSessionProgress(sessionId, progress);
+  }
+}
