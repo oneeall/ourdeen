@@ -27,18 +27,14 @@ class Providers extends StatelessWidget {
     return MultiProvider(
       providers: [
         // Counter feature providers
-        Provider<CounterRepository>(
-          create: (_) => CounterRepositoryImpl(),
-        ),
+        Provider<CounterRepository>(create: (_) => CounterRepositoryImpl()),
         Provider<GetCounterUseCase>(
-          create: (context) => GetCounterUseCase(
-            context.read<CounterRepository>(),
-          ),
+          create: (context) =>
+              GetCounterUseCase(context.read<CounterRepository>()),
         ),
         Provider<IncrementCounterUseCase>(
-          create: (context) => IncrementCounterUseCase(
-            context.read<CounterRepository>(),
-          ),
+          create: (context) =>
+              IncrementCounterUseCase(context.read<CounterRepository>()),
         ),
         ChangeNotifierProvider<CounterViewModel>(
           create: (context) => CounterViewModel(
@@ -46,35 +42,30 @@ class Providers extends StatelessWidget {
             incrementCounterUseCase: context.read<IncrementCounterUseCase>(),
           )..initialize(),
         ),
-        
+
         // Quran reader feature providers
-        Provider<QuranRepository>(
-          create: (_) => QuranRepositoryImpl(),
-        ),
+        Provider<QuranRepository>(create: (_) => QuranRepositoryImpl()),
         Provider<GetVersesUseCase>(
-          create: (context) => GetVersesUseCase(
-            context.read<QuranRepository>(),
-          ),
+          create: (context) =>
+              GetVersesUseCase(context.read<QuranRepository>()),
         ),
         ChangeNotifierProvider<QuranReaderViewModel>(
-          create: (context) => QuranReaderViewModel(
-            context.read<GetVersesUseCase>(),
-          )..loadVerses(),
+          create: (context) =>
+              QuranReaderViewModel(context.read<GetVersesUseCase>())
+                ..loadVerses(),
         ),
-        
+
         // Memorizing feature providers
         Provider<MemorizationRepository>(
           create: (_) => MemorizationRepositoryImpl(),
         ),
         Provider<GetSessionsUseCase>(
-          create: (context) => GetSessionsUseCase(
-            context.read<MemorizationRepository>(),
-          ),
+          create: (context) =>
+              GetSessionsUseCase(context.read<MemorizationRepository>()),
         ),
         Provider<CreateSessionUseCase>(
-          create: (context) => CreateSessionUseCase(
-            context.read<MemorizationRepository>(),
-          ),
+          create: (context) =>
+              CreateSessionUseCase(context.read<MemorizationRepository>()),
         ),
         Provider<UpdateSessionProgressUseCase>(
           create: (context) => UpdateSessionProgressUseCase(

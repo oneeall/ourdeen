@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ourdeen/features/counter2/presentation/counter2_page.dart';
 import 'package:ourdeen/features/memorizing/presentation/views/memorizing_view.dart';
 
 import 'core/theme/theme.dart';
@@ -27,6 +28,7 @@ class MyApp extends StatelessWidget {
         // ),
         theme: brightness == Brightness.light ? theme.light() : theme.dark(),
         home: const MemorizingView(),
+        // home: Counter2Page(),
       ),
     );
   }

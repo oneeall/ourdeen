@@ -10,38 +10,38 @@ class CounterView extends StatelessWidget {
   Widget build(BuildContext context) {
     final viewModel = Provider.of<CounterViewModel>(context);
 
-    return Scaffold(
-      body: NestedScrollView(
-        headerSliverBuilder: (context, innerBoxIsScrolled) {
-          return [
-          /// create function sum
+    // return Scaffold(
+    //   body: NestedScrollView(
+    //     headerSliverBuilder: (context, innerBoxIsScrolled) {
+    //       return [
+    //       /// create function sum
           
-            SliverAppBar(
-              title: const Text('DDD MVVM Counter'),
-              snap: true,
-              floating: true,
-            ),
-          ];
-        },
-      body: Scaffold(
-        body: Center(
-          child: ListTile(
-            title: Text(
-              "قَالَ اجْعَلْنِيْ عَلٰى خَزَاۤىِٕنِ الْاَرْضِۚ اِنِّيْ حَفِيْظٌ عَلِيْمٌ",
-              style: MaterialTheme.arabicTextStyle,
-            ),
-            subtitle: Text(
-              "qâlaj‘alnî ‘alâ khazâ'inil-ardl, innî ḫafîdhun ‘alîm",
-              style: MaterialTheme.accessibleBodyStyle,
-            ),
-          ),
-        ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: viewModel.isBusy ? null : viewModel.incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ),
-    )));
+    //         SliverAppBar(
+    //           title: const Text('DDD MVVM Counter'),
+    //           snap: true,
+    //           floating: true,
+    //         ),
+    //       ];
+    //     },
+    //   body: Scaffold(
+    //     body: Center(
+    //       child: ListTile(
+    //         title: Text(
+    //           "قَالَ اجْعَلْنِيْ عَلٰى خَزَاۤىِٕنِ الْاَرْضِۚ اِنِّيْ حَفِيْظٌ عَلِيْمٌ",
+    //           style: MaterialTheme.arabicTextStyle,
+    //         ),
+    //         subtitle: Text(
+    //           "qâlaj‘alnî ‘alâ khazâ'inil-ardl, innî ḫafîdhun ‘alîm",
+    //           style: MaterialTheme.accessibleBodyStyle,
+    //         ),
+    //       ),
+    //     ),
+    //   floatingActionButton: FloatingActionButton(
+    //     onPressed: viewModel.isBusy ? null : viewModel.incrementCounter,
+    //     tooltip: 'Increment',
+    //     child: const Icon(Icons.add),
+    //   ),
+    // )));
     return Scaffold(
       appBar: AppBar(title: const Text('DDD MVVM Counter')),
       // body: Center(
@@ -75,7 +75,7 @@ class CounterView extends StatelessWidget {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: viewModel.isBusy ? null : viewModel.incrementCounter,
+          onPressed: viewModel.isBusy ? null : viewModel.incrementCounter,
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ),
