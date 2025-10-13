@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class ArabicVerseWidget extends StatelessWidget {
   final String verseText;
@@ -60,9 +61,9 @@ class ArabicVerseWidget extends StatelessWidget {
                     verseText,
                     style:
                         verseStyle ??
-                        textTheme.displayMedium?.copyWith(
+                        GoogleFonts.scheherazadeNew().copyWith(
                           fontSize: 28.0, // Larger for cognitive clarity
-                          fontFamily: 'Amiri',
+                          fontFamily: GoogleFonts.scheherazadeNew().fontFamily,
                           height: 2.2, // Better readability spacing
                           fontWeight: FontWeight.w600,
                           color: colorScheme.onSurface, // Use theme color

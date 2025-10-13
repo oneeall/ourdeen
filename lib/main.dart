@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:ourdeen/features/counter2/presentation/counter2_page.dart';
 import 'package:ourdeen/features/memorizing/presentation/views/memorizing_view.dart';
 
 import 'core/theme/theme.dart';
