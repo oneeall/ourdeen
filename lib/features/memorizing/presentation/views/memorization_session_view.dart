@@ -91,9 +91,9 @@ class _FullScreenMemorizationWidgetState extends State<FullScreenMemorizationWid
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  const Color(0xFF0F172A).withOpacity(0.8),
-                  const Color(0xFF1E293B).withOpacity(0.9),
-                  const Color(0xFF0F172A).withOpacity(0.8),
+                  const Color(0xFF0F172A).withValues(alpha: 0.8),
+                  const Color(0xFF1E293B).withValues(alpha: 0.9),
+                  const Color(0xFF0F172A).withValues(alpha: 0.8),
                 ],
               ),
             ),
@@ -127,15 +127,15 @@ class _FullScreenMemorizationWidgetState extends State<FullScreenMemorizationWid
                                   padding: const EdgeInsets.all(28.0),
                                   margin: const EdgeInsets.symmetric(horizontal: 16.0),
                                   decoration: BoxDecoration(
-                                    color: const Color(0xFF1E293B).withOpacity(0.6),
+                                    color: const Color(0xFF1E293B).withValues(alpha:0.6),
                                     borderRadius: BorderRadius.circular(20),
                                     border: Border.all(
-                                      color: const Color(0xFF64748B).withOpacity(0.3),
+                                      color: const Color(0xFF64748B).withValues(alpha:0.3),
                                       width: 1.0,
                                     ),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: const Color(0xFF0EA5E9).withOpacity(0.1),
+                                        color: const Color(0xFF0EA5E9).withValues(alpha:0.1),
                                         blurRadius: 20,
                                         offset: const Offset(0, 10),
                                       ),
@@ -150,7 +150,7 @@ class _FullScreenMemorizationWidgetState extends State<FullScreenMemorizationWid
                                       fontWeight: FontWeight.w400,
                                       shadows: [
                                         Shadow(
-                                          color: Colors.black.withOpacity(0.5),
+                                          color: Colors.black.withValues(alpha:0.5),
                                           offset: const Offset(2.0, 2.0),
                                           blurRadius: 4.0,
                                         ),
@@ -171,15 +171,15 @@ class _FullScreenMemorizationWidgetState extends State<FullScreenMemorizationWid
                                     padding: const EdgeInsets.all(20.0),
                                     margin: const EdgeInsets.symmetric(horizontal: 16.0),
                                     decoration: BoxDecoration(
-                                      color: const Color(0xFF1E293B).withOpacity(0.4),
+                                      color: const Color(0xFF1E293B).withValues(alpha:0.4),
                                       borderRadius: BorderRadius.circular(16),
                                       border: Border.all(
-                                        color: const Color(0xFF64748B).withOpacity(0.2),
+                                        color: const Color(0xFF64748B).withValues(alpha:0.2),
                                         width: 1.0,
                                       ),
                                       boxShadow: [
                                         BoxShadow(
-                                          color: Colors.black.withOpacity(0.1),
+                                          color: Colors.black.withValues(alpha:0.1),
                                           blurRadius: 10,
                                           offset: const Offset(0, 5),
                                         ),
@@ -244,7 +244,7 @@ class _FullScreenMemorizationWidgetState extends State<FullScreenMemorizationWid
                           borderRadius: BorderRadius.circular(24),
                           boxShadow: [
                             BoxShadow(
-                              color: const Color(0xFF0EA5E9).withOpacity(0.4),
+                              color: const Color(0xFF0EA5E9).withValues(alpha:0.4),
                               blurRadius: 20,
                               offset: const Offset(0, 8),
                             ),
@@ -271,7 +271,7 @@ class _FullScreenMemorizationWidgetState extends State<FullScreenMemorizationWid
                               'Recitations',
                               style: GoogleFonts.inter(
                                 fontSize: 13,
-                                color: Colors.white.withOpacity(0.85),
+                                color: Colors.white.withValues(alpha:0.85),
                                 fontWeight: FontWeight.w300,
                               ),
                             ),
@@ -300,10 +300,10 @@ class _FullScreenMemorizationWidgetState extends State<FullScreenMemorizationWid
                   ),
                   child: Container(
                     decoration: BoxDecoration(
-                      color: const Color(0xFF334155).withOpacity(0.8),
+                      color: const Color(0xFF334155).withValues(alpha:0.8),
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(
-                        color: const Color(0xFF64748B).withOpacity(0.4),
+                        color: const Color(0xFF64748B).withValues(alpha:0.4),
                         width: 1.0,
                       ),
                     ),
@@ -340,7 +340,7 @@ class _FullScreenMemorizationWidgetState extends State<FullScreenMemorizationWid
                       children: [
                         Icon(
                           Icons.tap_and_play_outlined,
-                          color: const Color(0xFF94A3B8).withOpacity(0.7),
+                          color: const Color(0xFF94A3B8).withValues(alpha:0.7),
                           size: 20,
                         ),
                         const SizedBox(width: 8),
@@ -348,7 +348,7 @@ class _FullScreenMemorizationWidgetState extends State<FullScreenMemorizationWid
                           'Tap anywhere to recite',
                           style: GoogleFonts.inter(
                             fontSize: 16,
-                            color: const Color(0xFF94A3B8).withOpacity(0.7),
+                            color: const Color(0xFF94A3B8).withValues(alpha:0.7),
                             fontWeight: FontWeight.w300,
                           ),
                         ),
@@ -1119,7 +1119,7 @@ class _MemorizationSessionViewState extends State<MemorizationSessionView>
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Theme.of(context).colorScheme.primary.withOpacity(0.4),
+                  color: Theme.of(context).colorScheme.primary.withValues(alpha:0.4),
                   blurRadius: 20,
                   offset: const Offset(0, 8),
                 ),
