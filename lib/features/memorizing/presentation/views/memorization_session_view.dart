@@ -481,39 +481,6 @@ class _State extends State<TransformByGestured>
 }
 
 
-class ReciteFloatButton extends StatefulWidget {
-  const ReciteFloatButton({super.key});
-
-  @override
-  State<ReciteFloatButton> createState() => _ReciteFloatButtonState();
-}
-
-class _ReciteFloatButtonState extends State<ReciteFloatButton> {
-  var _offset = Offset(0.0, 0.0);
-
-  @override
-  Widget build(BuildContext context) {
-    return Positioned(
-      left: _offset.dx,
-      top: _offset.dy,
-      child: GestureDetector(
-        onPanUpdate: (details) {
-          setState(() {
-
-            _offset += Offset(details.delta.dx, details.delta.dy);
-          });
-        },
-        child: ElevatedButton.icon(
-          icon: Icon(Icons.numbers),
-          onPressed: () {},
-          label: Text('Recite'),
-        ),
-      ),
-    );
-  }
-}
-
-
 class _BottomNavigation extends StatelessWidget {
   const _BottomNavigation({
     required this.currentStep,
@@ -869,154 +836,149 @@ class _MemorizationSessionViewState extends State<MemorizationSessionView>
             // }
             return true;
           },
-          child: Stack(
-            children: [
-              CustomScrollView(
-                controller: bodyScrollController,
-                slivers: [
-                  SliverAppBar(
-                    pinned: true,
+          child: CustomScrollView(
+            controller: bodyScrollController,
+            slivers: [
+              SliverAppBar(
+                pinned: true,
 
-                    /// expandedHeight it is 150
-                    expandedHeight: 150.0,
-                    // snap: true,
-                    // floating: true,
-                    /// collapsedHeight and add 16 to make space between leading back navigation and progress bar.
-                    collapsedHeight: kToolbarHeight + 16,
-                    bottom: PreferredSize(
-                      preferredSize: const Size.fromHeight(48.0),
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                          bottom: 12.0,
-                          left: 16.0,
-                          right: 16.0,
-                        ),
-                        child: Column(
-                          children: [
-                            Row(
-                              children: [
-                                const SizedBox(width: 8),
-                                Expanded(
-                                  child: LinearProgressIndicator(
-                                    value: _progress,
-                                    backgroundColor: Colors.grey[300],
-                                    color: Theme
-                                        .of(context)
-                                        .colorScheme
-                                        .primary,
-                                    minHeight: 8,
-                                    borderRadius: BorderRadius.circular(4),
-                                  ),
-                                ),
-                                const SizedBox(width: 8),
-                                Text(
-                                  '${(_progress * 100).toInt()}%',
-                                  style: Theme
-                                      .of(context)
-                                      .textTheme
-                                      .bodyMedium,
-                                ),
-                              ],
-                            ),
-                            // Surah info
-                            GestureDetector(
-                              onTap: () {
-                                // This function triggers the bottom sheet and our custom scrim
-                                _scaffoldKey.currentState?.showBottomSheet((
-                                    BuildContext context,) {
-                                  return SizedBox(
-                                    height: 250,
-                                    child: Center(
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment
-                                            .center,
-                                        children: <Widget>[
-                                          const Text(
-                                              'This is the bottom sheet!'),
-                                          const SizedBox(height: 20),
-                                          ElevatedButton(
-                                            child: const Text('Close'),
-                                            onPressed: () =>
-                                                Navigator.pop(context),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                });
-                              },
-                              child: Container(
-                                padding: const EdgeInsets.all(12),
-                                decoration: BoxDecoration(
-                                  color: Theme
-                                      .of(
-                                    context,
-                                  )
-                                      .colorScheme
-                                      .primaryContainer,
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: Text(
-                                  'Surah ${widget.surahNumber}:${widget
-                                      .startVerse}-${widget
-                                      .endVerse} (${_currentStep + 1})',
-                                  style: Theme
-                                      .of(context)
-                                      .textTheme
-                                      .titleMedium
-                                      ?.copyWith(fontWeight: FontWeight.bold),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                /// expandedHeight it is 150
+                expandedHeight: 150.0,
+                // snap: true,
+                // floating: true,
+                /// collapsedHeight and add 16 to make space between leading back navigation and progress bar.
+                collapsedHeight: kToolbarHeight + 16,
+                bottom: PreferredSize(
+                  preferredSize: const Size.fromHeight(48.0),
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                      bottom: 12.0,
+                      left: 16.0,
+                      right: 16.0,
                     ),
-                    leading: IconButton(
-                      icon: const Icon(Icons.arrow_back),
-                      onPressed: () => Navigator.of(context).pop(),
-                    ),
-                  ),
-                  SliverFillRemaining(
-                    hasScrollBody: false,
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                        left: 16.0,
-                        right: 16.0,
-                        bottom: 16.0,
-                      ),
-                      child: Visibility(
-                        visible: false,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                    child: Column(
+                      children: [
+                        Row(
                           children: [
-                            // Current verse display
+                            const SizedBox(width: 8),
                             Expanded(
-                              child: FadeTransition(
-                                opacity: _fadeAnimation,
-                                child: SingleChildScrollView(
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  child: ArabicVerseWidget(
-                                    verseText: _verses[_currentStep],
-                                    translation: _translations[_currentStep],
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 24.0,
-                                      horizontal: 16.0,
-                                    ),
-                                    maxWidth: 700.0,
-                                  ),
-                                ),
+                              child: LinearProgressIndicator(
+                                value: _progress,
+                                backgroundColor: Colors.grey[300],
+                                color: Theme
+                                    .of(context)
+                                    .colorScheme
+                                    .primary,
+                                minHeight: 8,
+                                borderRadius: BorderRadius.circular(4),
                               ),
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              '${(_progress * 100).toInt()}%',
+                              style: Theme
+                                  .of(context)
+                                  .textTheme
+                                  .bodyMedium,
                             ),
                           ],
                         ),
-                      ),
+                        // Surah info
+                        GestureDetector(
+                          onTap: () {
+                            // This function triggers the bottom sheet and our custom scrim
+                            _scaffoldKey.currentState?.showBottomSheet((
+                                BuildContext context,) {
+                              return SizedBox(
+                                height: 250,
+                                child: Center(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment
+                                        .center,
+                                    children: <Widget>[
+                                      const Text(
+                                          'This is the bottom sheet!'),
+                                      const SizedBox(height: 20),
+                                      ElevatedButton(
+                                        child: const Text('Close'),
+                                        onPressed: () =>
+                                            Navigator.pop(context),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            });
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: Theme
+                                  .of(
+                                context,
+                              )
+                                  .colorScheme
+                                  .primaryContainer,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Text(
+                              'Surah ${widget.surahNumber}:${widget
+                                  .startVerse}-${widget
+                                  .endVerse} (${_currentStep + 1})',
+                              style: Theme
+                                  .of(context)
+                                  .textTheme
+                                  .titleMedium
+                                  ?.copyWith(fontWeight: FontWeight.bold),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
+                ),
+                leading: IconButton(
+                  icon: const Icon(Icons.arrow_back),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
               ),
-              ReciteFloatButton()
+              SliverFillRemaining(
+                hasScrollBody: false,
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                    left: 16.0,
+                    right: 16.0,
+                    bottom: 16.0,
+                  ),
+                  child: Visibility(
+                    visible: false,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        // Current verse display
+                        Expanded(
+                          child: FadeTransition(
+                            opacity: _fadeAnimation,
+                            child: SingleChildScrollView(
+                              physics: const NeverScrollableScrollPhysics(),
+                              child: ArabicVerseWidget(
+                                verseText: _verses[_currentStep],
+                                translation: _translations[_currentStep],
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 24.0,
+                                  horizontal: 16.0,
+                                ),
+                                maxWidth: 700.0,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
