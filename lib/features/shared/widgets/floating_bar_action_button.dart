@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
+import 'package:flutter/services.dart';
 import 'package:motor/motor.dart';
+import 'package:ourdeen/features/memorizing/presentation/viewmodels/memorization_verse_viewmodel.dart';
+import 'package:provider/provider.dart';
 
 class FloatingBarActionButton extends StatefulWidget {
   const FloatingBarActionButton({super.key});
@@ -11,7 +14,7 @@ class FloatingBarActionButton extends StatefulWidget {
 }
 
 class _FloatingBarActionButtonState extends State<FloatingBarActionButton> {
-  ValueNotifier<double> targetValue = ValueNotifier(0.0);
+  ValueNotifier<double> targetValue = ValueNotifier(1.5);
 
   @override
   void initState() {
@@ -22,33 +25,31 @@ class _FloatingBarActionButtonState extends State<FloatingBarActionButton> {
   Widget build(BuildContext context) {
     return NotificationListener(
       child: IntrinsicWidth(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          textBaseline: TextBaseline.ideographic,
-          children: [
-            SizedBox(
-              width: 272,
-              height: 64,
-              child: Align(
-                alignment: Alignment.centerRight,
-                child: _ToolbarFloatingAnimated(targetNotifier: targetValue),
+        child: SizedBox(
+          height: 96,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Padding(
+                  padding: const EdgeInsets.only(top: 16, bottom: 16, left: 16),
+                  child: _ToolbarFloatingAnimated(targetNotifier: targetValue)),
+              Padding(
+                padding: const EdgeInsets.only(left: 16.0),
+                child: _MenuFloatingAnimated(
+                  onPressed: () {
+                    setState(() {
+                      HapticFeedback.selectionClick();
+                      if (targetValue.value == 0.0) {
+                        targetValue.value = 1.5;
+                      } else {
+                        targetValue.value = 0.0;
+                      }
+                    });
+                  },
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 16.0),
-              child: _MenuFloatingAnimated(
-                onPressed: () {
-                  setState(() {
-                    if (targetValue.value == 1.0) {
-                      targetValue.value = 0.0;
-                    } else {
-                      targetValue.value = 1.0;
-                    }
-                  });
-                },
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -108,7 +109,7 @@ class _MenuFloatingAnimatedState extends State<_MenuFloatingAnimated>
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton(
-      backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
+      backgroundColor: Theme.of(context).colorScheme.primaryContainer,
       elevation: 4.0,
       onPressed: () {
         if (_controller.value == 1.0) {
@@ -120,6 +121,7 @@ class _MenuFloatingAnimatedState extends State<_MenuFloatingAnimated>
       },
       child: AnimatedIcon(
         icon: AnimatedIcons.menu_close,
+        color: Theme.of(context).colorScheme.onSurfaceVariant,
         progress: _iconAnimation,
       ),
     );
@@ -177,10 +179,10 @@ class _ToolbarFloatingAnimatedState extends State<_ToolbarFloatingAnimated> {
         value: value,
         // builder: (context, value, child) =>
         //     Transform.scale(scaleX: value, child: child!),
-        builder: (context, value, child) => SizeTransition(
-          sizeFactor: Animation.fromValueListenable(ValueNotifier<double>(value)),
-          axis: Axis.horizontal,
-          axisAlignment: 1.0,
+        builder: (context, value, child) => SlideTransition(
+          position: Animation.fromValueListenable(ValueNotifier<Offset>(Offset(value, 0.0))),
+          // axis: Axis.horizontal,
+          // axisAlignment: 1.0,
           child: child!,
         ),
         child: const _ToolbarFloating(),
@@ -195,9 +197,9 @@ class _ToolbarFloating extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Theme.of(context).colorScheme.surfaceContainerLow,
+      color: Theme.of(context).colorScheme.surfaceContainerHigh,
       borderRadius: BorderRadius.circular(32.0),
-      elevation: 0.0,
+      elevation: 4.0,
       child: SizedBox(
         height: 64,
         width: 272,
@@ -206,17 +208,23 @@ class _ToolbarFloating extends StatelessWidget {
           mainAxisSize: MainAxisSize.max,
           children: [
             IconButton(
-              onPressed: () {},
+              onPressed: () {
+                PreviousButtonNotification().dispatch(context);
+              },
               icon: Icon(Icons.navigate_before),
               tooltip: 'Tap to Previous',
             ),
             IconButton(
-              onPressed: () {},
+              onPressed: () {
+                NextButtonNotification().dispatch(context);
+              },
               icon: Icon(Icons.navigate_next),
               tooltip: 'Tap to Next',
             ),
             IconButton(
-              onPressed: () {},
+              onPressed: () {
+                ReciteButtonNotification().dispatch(context);
+              },
               icon: Icon(Icons.auto_stories_outlined),
               tooltip: 'Tap to Count',
             ),
@@ -224,5 +232,27 @@ class _ToolbarFloating extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+sealed class FloatingBarActionNotification extends Notification {
+  void handle(BuildContext context);
+}
+class PreviousButtonNotification extends FloatingBarActionNotification {
+  @override
+  void handle(BuildContext context) {
+    context.read<MemorizationVerseViewModel>().previousVerse();
+  }
+}
+class NextButtonNotification extends FloatingBarActionNotification {
+  @override
+  void handle(BuildContext context) {
+    context.read<MemorizationVerseViewModel>().nextVerse();
+  }
+}
+class ReciteButtonNotification extends FloatingBarActionNotification {
+  @override
+  void handle(BuildContext context) {
+    context.read<MemorizationVerseViewModel>().onFullScreen();
   }
 }

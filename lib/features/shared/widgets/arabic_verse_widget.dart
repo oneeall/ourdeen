@@ -66,7 +66,7 @@ class ArabicVerseWidget extends StatelessWidget {
                           fontFamily: GoogleFonts.scheherazadeNew().fontFamily,
                           height: 2.2, // Better readability spacing
                           fontWeight: FontWeight.w600,
-                          color: colorScheme.onSurface, // Use theme color
+                          color: colorScheme.onSurfaceVariant, // Use theme color
                           letterSpacing: 0.8,
                           shadows:
                               Theme.of(context).brightness == Brightness.dark

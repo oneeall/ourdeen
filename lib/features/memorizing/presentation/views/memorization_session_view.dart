@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:ourdeen/features/memorizing/presentation/viewmodels/memorization_verse_viewmodel.dart';
 import 'package:ourdeen/features/shared/widgets/arabic_verse_widget.dart';
 import 'package:ourdeen/features/shared/widgets/floating_bar_action_button.dart';
 import 'package:provider/provider.dart';
 import 'package:ourdeen/features/memorizing/presentation/viewmodels/memorizing_viewmodel.dart';
-
 
 class FullScreenMemorizationWidget extends StatefulWidget {
   final String verse;
@@ -27,10 +27,12 @@ class FullScreenMemorizationWidget extends StatefulWidget {
   });
 
   @override
-  State<FullScreenMemorizationWidget> createState() => _FullScreenMemorizationWidgetState();
+  State<FullScreenMemorizationWidget> createState() =>
+      _FullScreenMemorizationWidgetState();
 }
 
-class _FullScreenMemorizationWidgetState extends State<FullScreenMemorizationWidget> 
+class _FullScreenMemorizationWidgetState
+    extends State<FullScreenMemorizationWidget>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
@@ -44,31 +46,29 @@ class _FullScreenMemorizationWidgetState extends State<FullScreenMemorizationWid
       duration: const Duration(milliseconds: 600),
       vsync: this,
     );
-    
-    _fadeAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: const Interval(0.0, 0.5, curve: Curves.easeOut),
-    ));
-    
-    _scaleAnimation = Tween<double>(
-      begin: 0.8,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: const Interval(0.3, 1.0, curve: Curves.elasticOut),
-    ));
-    
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, 0.2),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: const Interval(0.2, 0.8, curve: Curves.easeOutCubic),
-    ));
-    
+
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: const Interval(0.0, 0.5, curve: Curves.easeOut),
+      ),
+    );
+
+    _scaleAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: const Interval(0.3, 1.0, curve: Curves.elasticOut),
+      ),
+    );
+
+    _slideAnimation =
+        Tween<Offset>(begin: const Offset(0, 0.2), end: Offset.zero).animate(
+          CurvedAnimation(
+            parent: _animationController,
+            curve: const Interval(0.2, 0.8, curve: Curves.easeOutCubic),
+          ),
+        );
+
     _animationController.forward();
   }
 
@@ -98,7 +98,7 @@ class _FullScreenMemorizationWidgetState extends State<FullScreenMemorizationWid
               ),
             ),
           ),
-          
+
           // Full screen verse display
           GestureDetector(
             onTap: widget.onExit,
@@ -125,17 +125,25 @@ class _FullScreenMemorizationWidgetState extends State<FullScreenMemorizationWid
                               builder: (context, child) {
                                 return Container(
                                   padding: const EdgeInsets.all(28.0),
-                                  margin: const EdgeInsets.symmetric(horizontal: 16.0),
+                                  margin: const EdgeInsets.symmetric(
+                                    horizontal: 16.0,
+                                  ),
                                   decoration: BoxDecoration(
-                                    color: const Color(0xFF1E293B).withValues(alpha:0.6),
+                                    color: const Color(
+                                      0xFF1E293B,
+                                    ).withValues(alpha: 0.6),
                                     borderRadius: BorderRadius.circular(20),
                                     border: Border.all(
-                                      color: const Color(0xFF64748B).withValues(alpha:0.3),
+                                      color: const Color(
+                                        0xFF64748B,
+                                      ).withValues(alpha: 0.3),
                                       width: 1.0,
                                     ),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: const Color(0xFF0EA5E9).withValues(alpha:0.1),
+                                        color: const Color(
+                                          0xFF0EA5E9,
+                                        ).withValues(alpha: 0.1),
                                         blurRadius: 20,
                                         offset: const Offset(0, 10),
                                       ),
@@ -150,7 +158,9 @@ class _FullScreenMemorizationWidgetState extends State<FullScreenMemorizationWid
                                       fontWeight: FontWeight.w400,
                                       shadows: [
                                         Shadow(
-                                          color: Colors.black.withValues(alpha:0.5),
+                                          color: Colors.black.withValues(
+                                            alpha: 0.5,
+                                          ),
                                           offset: const Offset(2.0, 2.0),
                                           blurRadius: 4.0,
                                         ),
@@ -169,17 +179,25 @@ class _FullScreenMemorizationWidgetState extends State<FullScreenMemorizationWid
                                 builder: (context, child) {
                                   return Container(
                                     padding: const EdgeInsets.all(20.0),
-                                    margin: const EdgeInsets.symmetric(horizontal: 16.0),
+                                    margin: const EdgeInsets.symmetric(
+                                      horizontal: 16.0,
+                                    ),
                                     decoration: BoxDecoration(
-                                      color: const Color(0xFF1E293B).withValues(alpha:0.4),
+                                      color: const Color(
+                                        0xFF1E293B,
+                                      ).withValues(alpha: 0.4),
                                       borderRadius: BorderRadius.circular(16),
                                       border: Border.all(
-                                        color: const Color(0xFF64748B).withValues(alpha:0.2),
+                                        color: const Color(
+                                          0xFF64748B,
+                                        ).withValues(alpha: 0.2),
                                         width: 1.0,
                                       ),
                                       boxShadow: [
                                         BoxShadow(
-                                          color: Colors.black.withValues(alpha:0.1),
+                                          color: Colors.black.withValues(
+                                            alpha: 0.1,
+                                          ),
                                           blurRadius: 10,
                                           offset: const Offset(0, 5),
                                         ),
@@ -207,7 +225,7 @@ class _FullScreenMemorizationWidgetState extends State<FullScreenMemorizationWid
               ),
             ),
           ),
-          
+
           // Modern recitation counter with enhanced animation
           if (widget.showRecitationCounter)
             AnimatedBuilder(
@@ -227,7 +245,11 @@ class _FullScreenMemorizationWidgetState extends State<FullScreenMemorizationWid
                       scale: Tween<double>(begin: 0.8, end: 1.0).animate(
                         CurvedAnimation(
                           parent: _animationController,
-                          curve: const Interval(0.65, 1.0, curve: Curves.elasticOut),
+                          curve: const Interval(
+                            0.65,
+                            1.0,
+                            curve: Curves.elasticOut,
+                          ),
                         ),
                       ),
                       child: Container(
@@ -236,15 +258,14 @@ class _FullScreenMemorizationWidgetState extends State<FullScreenMemorizationWid
                           gradient: const LinearGradient(
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
-                            colors: [
-                              Color(0xFF0EA5E9),
-                              Color(0xFF38BDF8),
-                            ],
+                            colors: [Color(0xFF0EA5E9), Color(0xFF38BDF8)],
                           ),
                           borderRadius: BorderRadius.circular(24),
                           boxShadow: [
                             BoxShadow(
-                              color: const Color(0xFF0EA5E9).withValues(alpha:0.4),
+                              color: const Color(
+                                0xFF0EA5E9,
+                              ).withValues(alpha: 0.4),
                               blurRadius: 20,
                               offset: const Offset(0, 8),
                             ),
@@ -271,7 +292,7 @@ class _FullScreenMemorizationWidgetState extends State<FullScreenMemorizationWid
                               'Recitations',
                               style: GoogleFonts.inter(
                                 fontSize: 13,
-                                color: Colors.white.withValues(alpha:0.85),
+                                color: Colors.white.withValues(alpha: 0.85),
                                 fontWeight: FontWeight.w300,
                               ),
                             ),
@@ -283,7 +304,7 @@ class _FullScreenMemorizationWidgetState extends State<FullScreenMemorizationWid
                 );
               },
             ),
-          
+
           // Animated exit button
           AnimatedBuilder(
             animation: _animationController,
@@ -300,10 +321,10 @@ class _FullScreenMemorizationWidgetState extends State<FullScreenMemorizationWid
                   ),
                   child: Container(
                     decoration: BoxDecoration(
-                      color: const Color(0xFF334155).withValues(alpha:0.8),
+                      color: const Color(0xFF334155).withValues(alpha: 0.8),
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(
-                        color: const Color(0xFF64748B).withValues(alpha:0.4),
+                        color: const Color(0xFF64748B).withValues(alpha: 0.4),
                         width: 1.0,
                       ),
                     ),
@@ -317,7 +338,7 @@ class _FullScreenMemorizationWidgetState extends State<FullScreenMemorizationWid
               );
             },
           ),
-          
+
           // Animated recite instruction indicator at bottom
           AnimatedBuilder(
             animation: _animationController,
@@ -340,7 +361,7 @@ class _FullScreenMemorizationWidgetState extends State<FullScreenMemorizationWid
                       children: [
                         Icon(
                           Icons.tap_and_play_outlined,
-                          color: const Color(0xFF94A3B8).withValues(alpha:0.7),
+                          color: const Color(0xFF94A3B8).withValues(alpha: 0.7),
                           size: 20,
                         ),
                         const SizedBox(width: 8),
@@ -348,7 +369,9 @@ class _FullScreenMemorizationWidgetState extends State<FullScreenMemorizationWid
                           'Tap anywhere to recite',
                           style: GoogleFonts.inter(
                             fontSize: 16,
-                            color: const Color(0xFF94A3B8).withValues(alpha:0.7),
+                            color: const Color(
+                              0xFF94A3B8,
+                            ).withValues(alpha: 0.7),
                             fontWeight: FontWeight.w300,
                           ),
                         ),
@@ -359,7 +382,7 @@ class _FullScreenMemorizationWidgetState extends State<FullScreenMemorizationWid
               );
             },
           ),
-          
+
           // Tap to recite overlay with ripple effect
           Positioned.fill(
             child: GestureDetector(
@@ -452,18 +475,18 @@ class _State extends State<TransformByGestured>
   void _animateToPosition(double targetPosition) {
     _animationController
         .animateTo(
-      targetPosition.abs() / 300,
-      duration: Duration(milliseconds: 300),
-    )
+          targetPosition.abs() / 300,
+          duration: Duration(milliseconds: 300),
+        )
         .then((_) {
-      if (targetPosition != 0) {
-        // Card was swiped away, replace with new card
-        setState(() {
-          _currentPosition = 0;
-          _currentPositionY = 0;
+          if (targetPosition != 0) {
+            // Card was swiped away, replace with new card
+            setState(() {
+              _currentPosition = 0;
+              _currentPositionY = 0;
+            });
+          }
         });
-      }
-    });
   }
 
   @override
@@ -479,7 +502,6 @@ class _State extends State<TransformByGestured>
     );
   }
 }
-
 
 class _BottomNavigation extends StatelessWidget {
   const _BottomNavigation({
@@ -602,7 +624,7 @@ class _MemorizationSessionViewState extends State<MemorizationSessionView>
     {
       'arabic': 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ',
       'translation':
-      'In the name of Allah, the Entirely Merciful, the Especially Merciful.',
+          'In the name of Allah, the Entirely Merciful, the Especially Merciful.',
     },
     {
       'arabic': 'الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ',
@@ -626,9 +648,9 @@ class _MemorizationSessionViewState extends State<MemorizationSessionView>
     },
     {
       'arabic':
-      'صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ',
+          'صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ',
       'translation':
-      'The path of those upon whom You have bestowed favor, not of those who have evoked [Your] anger or of those who are astray.',
+          'The path of those upon whom You have bestowed favor, not of those who have evoked [Your] anger or of those who are astray.',
     },
     // Surah Al-Ikhlas (QS 112:1-4)
     {
@@ -654,9 +676,9 @@ class _MemorizationSessionViewState extends State<MemorizationSessionView>
     },
     {
       'arabic':
-      'لِّيَغْفِرَ لَكَ ٱللَّهُ مَا تَقَدَّمَ مِن ذَنۢبِكَ وَمَا تَأَخَّرَ وَيُتِمَّ نِعْمَتَهُۥ عَلَيْكَ وَيَهْدِيَكَ صِرَٰطًۭا مُّسْتَقِيمًۭا',
+          'لِّيَغْفِرَ لَكَ ٱللَّهُ مَا تَقَدَّمَ مِن ذَنۢبِكَ وَمَا تَأَخَّرَ وَيُتِمَّ نِعْمَتَهُۥ عَلَيْكَ وَيَهْدِيَكَ صِرَٰطًۭا مُّسْتَقِيمًۭا',
       'translation':
-      'so that Allah may forgive you for your past and future shortcomings,1 perfect His favour upon you, guide you along the Straight Path,',
+          'so that Allah may forgive you for your past and future shortcomings,1 perfect His favour upon you, guide you along the Straight Path,',
     },
     {
       'arabic': 'وَيَنصُرَكَ ٱللَّهُ نَصْرًا عَزِيزًا',
@@ -732,6 +754,11 @@ class _MemorizationSessionViewState extends State<MemorizationSessionView>
     _controller.forward();
   }
 
+  void _playStepAnimation() {
+    _controller.reset();
+    _controller.forward();
+  }
+
   void _nextStep() {
     if (_currentStep < _verses.length - 1) {
       setState(() {
@@ -748,12 +775,11 @@ class _MemorizationSessionViewState extends State<MemorizationSessionView>
 
   void _previousStep() {
     if (_currentStep > 0) {
-      setState(() {
-        _currentStep--;
-        _progress = (_currentStep + 1) / _verses.length;
-        _controller.reset();
-        _controller.forward();
-      });
+      /// do animation
+      _controller.reset();
+      _controller.forward();
+      _currentStep--;
+      _progress = (_currentStep + 1) / _verses.length;
     }
   }
 
@@ -811,32 +837,23 @@ class _MemorizationSessionViewState extends State<MemorizationSessionView>
       );
     } else {
       // Normal view
-      return Scaffold(
-        key: _scaffoldKey,
-        body: NotificationListener<ScrollNotification>(
-          onNotification: (ScrollNotification notification) {
-            /// TODO : turns out I think no need auto collapse while scrolling the verse because now there is floating button that can handle it.
-            // if (notification is ScrollUpdateNotification) {
-            //   final currentOffset = notification.metrics.pixels;
-            //   final scrollDirection = currentOffset - lastScrollOffset;
-            //
-            //   if (scrollDirection > scrollThreshold) {
-            //     // Scrolling down - hide bottom nav
-            //     showOrHideBottomNav(false);
-            //     isScrollingDown = true;
-            //     isScrollingUp = false;
-            //   } else if (scrollDirection < -scrollThreshold) {
-            //     // Scrolling up - show bottom nav
-            //     showOrHideBottomNav(true);
-            //     isScrollingDown = false;
-            //     isScrollingUp = true;
-            //   }
-            //
-            //   lastScrollOffset = currentOffset;
-            // }
-            return true;
-          },
-          child: CustomScrollView(
+      return ChangeNotifierProvider(
+        create: (_) {
+          /// TODO: please next step move to data integration
+          return MemorizationVerseViewModel(
+            verses: [..._surahData.sublist(11, 14).map((v) => v['arabic']!)],
+            translationVerses: [
+              ..._surahData.sublist(11, 14).map((v) => v['translation']!),
+            ],
+            onVerseDone: _showCompletionDialog,
+            onFullScreen: () {
+              _toggleFullScreenMode();
+            },
+          )..changeVerse();
+        },
+        child: Scaffold(
+          key: _scaffoldKey,
+          body: CustomScrollView(
             controller: bodyScrollController,
             slivers: [
               SliverAppBar(
@@ -865,10 +882,7 @@ class _MemorizationSessionViewState extends State<MemorizationSessionView>
                               child: LinearProgressIndicator(
                                 value: _progress,
                                 backgroundColor: Colors.grey[300],
-                                color: Theme
-                                    .of(context)
-                                    .colorScheme
-                                    .primary,
+                                color: Theme.of(context).colorScheme.primary,
                                 minHeight: 8,
                                 borderRadius: BorderRadius.circular(4),
                               ),
@@ -876,10 +890,7 @@ class _MemorizationSessionViewState extends State<MemorizationSessionView>
                             const SizedBox(width: 8),
                             Text(
                               '${(_progress * 100).toInt()}%',
-                              style: Theme
-                                  .of(context)
-                                  .textTheme
-                                  .bodyMedium,
+                              style: Theme.of(context).textTheme.bodyMedium,
                             ),
                           ],
                         ),
@@ -888,21 +899,19 @@ class _MemorizationSessionViewState extends State<MemorizationSessionView>
                           onTap: () {
                             // This function triggers the bottom sheet and our custom scrim
                             _scaffoldKey.currentState?.showBottomSheet((
-                                BuildContext context,) {
+                              BuildContext context,
+                            ) {
                               return SizedBox(
                                 height: 250,
                                 child: Center(
                                   child: Column(
-                                    mainAxisAlignment: MainAxisAlignment
-                                        .center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
-                                      const Text(
-                                          'This is the bottom sheet!'),
+                                      const Text('This is the bottom sheet!'),
                                       const SizedBox(height: 20),
                                       ElevatedButton(
                                         child: const Text('Close'),
-                                        onPressed: () =>
-                                            Navigator.pop(context),
+                                        onPressed: () => Navigator.pop(context),
                                       ),
                                     ],
                                   ),
@@ -913,22 +922,14 @@ class _MemorizationSessionViewState extends State<MemorizationSessionView>
                           child: Container(
                             padding: const EdgeInsets.all(12),
                             decoration: BoxDecoration(
-                              color: Theme
-                                  .of(
+                              color: Theme.of(
                                 context,
-                              )
-                                  .colorScheme
-                                  .primaryContainer,
+                              ).colorScheme.primaryContainer,
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Text(
-                              'Surah ${widget.surahNumber}:${widget
-                                  .startVerse}-${widget
-                                  .endVerse} (${_currentStep + 1})',
-                              style: Theme
-                                  .of(context)
-                                  .textTheme
-                                  .titleMedium
+                              'Surah ${widget.surahNumber}:${widget.startVerse}-${widget.endVerse} (${_currentStep + 1})',
+                              style: Theme.of(context).textTheme.titleMedium
                                   ?.copyWith(fontWeight: FontWeight.bold),
                               textAlign: TextAlign.center,
                             ),
@@ -952,7 +953,7 @@ class _MemorizationSessionViewState extends State<MemorizationSessionView>
                     bottom: 16.0,
                   ),
                   child: Visibility(
-                    visible: false,
+                    visible: true,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
@@ -962,14 +963,24 @@ class _MemorizationSessionViewState extends State<MemorizationSessionView>
                             opacity: _fadeAnimation,
                             child: SingleChildScrollView(
                               physics: const NeverScrollableScrollPhysics(),
-                              child: ArabicVerseWidget(
-                                verseText: _verses[_currentStep],
-                                translation: _translations[_currentStep],
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 24.0,
-                                  horizontal: 16.0,
-                                ),
-                                maxWidth: 700.0,
+                              child: Builder(
+                                builder: (context) {
+                                  final verseText = context
+                                      .read<MemorizationVerseViewModel>()
+                                      .textVerse;
+                                  final verseTranslation = context
+                                      .watch<MemorizationVerseViewModel>()
+                                      .translationVerse;
+                                  return ArabicVerseWidget(
+                                    verseText: verseText,
+                                    translation: verseTranslation,
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 24.0,
+                                      horizontal: 16.0,
+                                    ),
+                                    maxWidth: 700.0,
+                                  );
+                                },
                               ),
                             ),
                           ),
@@ -981,57 +992,20 @@ class _MemorizationSessionViewState extends State<MemorizationSessionView>
               ),
             ],
           ),
-        ),
-        floatingActionButton: Padding( padding:  EdgeInsets.only(bottom: 18.0),child: FloatingBarActionButton()),
-        // floatingActionButton: _floatingActionBuild(
-        //   context,
-        //   visibilityBottomNavNotifier,
-        //   isFullScreenMode: _isFullScreenMode,
-        //   onPressed: _toggleFullScreenMode,
-        // ),
-        // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        // bottomNavigationBar: _BottomNavigation(
-        //   currentStep: _currentStep,
-        //   previousStep: _previousStep,
-        //   nextStep: _nextStep,
-        //   verses: _verses,
-        //   visibilityNotifier: visibilityBottomNavNotifier,
-        //   isFullScreenMode: _isFullScreenMode, // Pass full screen mode state
-        // ),
-      );
-    }
-  }
-
-  // This is our custom scrim builder function
-  Widget _buildScrim(BuildContext context, Animation<double> animation) {
-    // We use a FadeTransition to animate the scrim's opacity.
-    return ScaleTransition(
-      scale: animation,
-      // Use a GestureDetector to dismiss the bottom sheet when the scrim is tapped.
-      child: GestureDetector(
-        onTap: () => Navigator.of(context).pop(),
-        child: Container(
-          decoration: const BoxDecoration(
-            gradient: RadialGradient(
-              colors: [
-                Color.fromARGB(200, 76, 175, 80), // Opaque Green in the center
-                Colors.redAccent, // Transparent on the edges
-              ],
-              radius: 1.5, // Make the gradient spread out
-              center: Alignment(0.0, 0.5), // Center it slightly lower
-            ),
+          floatingActionButton: Builder(
+            builder: (context) {
+              return NotificationListener<FloatingBarActionNotification>(
+                onNotification: (notification) {
+                  notification.handle(context);
+                  _playStepAnimation();
+                  return true;
+                },
+                child: FloatingBarActionButton(),
+              );
+            },
           ),
         ),
-      ),
-    );
-  }
-
-  Future<void> showOrHideBottomNav(bool shouldShow) async {
-    await Future.delayed(const Duration(milliseconds: 10));
-    if (shouldShow) {
-      visibilityBottomNavNotifier.value = true;
-    } else {
-      visibilityBottomNavNotifier.value = false;
+      );
     }
   }
 
@@ -1092,12 +1066,12 @@ class _MemorizationSessionViewState extends State<MemorizationSessionView>
     }
   }
 
-
-  Widget? _floatingActionBuild(BuildContext context,
-      ValueNotifier<bool> visibilityBottomNavNotifier, {
-        required VoidCallback onPressed,
-        bool isFullScreenMode = false,
-      }) {
+  Widget? _floatingActionBuild(
+    BuildContext context,
+    ValueNotifier<bool> visibilityBottomNavNotifier, {
+    required VoidCallback onPressed,
+    bool isFullScreenMode = false,
+  }) {
     return AnimatedBuilder(
       animation: Listenable.merge([visibilityBottomNavNotifier]),
       builder: (context, child) {
@@ -1119,7 +1093,9 @@ class _MemorizationSessionViewState extends State<MemorizationSessionView>
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Theme.of(context).colorScheme.primary.withValues(alpha:0.4),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.primary.withValues(alpha: 0.4),
                   blurRadius: 20,
                   offset: const Offset(0, 8),
                 ),
@@ -1133,9 +1109,7 @@ class _MemorizationSessionViewState extends State<MemorizationSessionView>
                 child: Container(
                   width: 64,
                   height: 64,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                  ),
+                  decoration: BoxDecoration(shape: BoxShape.circle),
                   child: Icon(
                     isFullScreenMode ? Icons.fullscreen_exit : Icons.fullscreen,
                     color: Colors.white,
