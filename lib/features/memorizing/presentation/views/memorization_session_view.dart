@@ -1,7 +1,594 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:ourdeen/features/shared/widgets/arabic_verse_widget.dart';
+import 'package:ourdeen/features/shared/widgets/floating_bar_action_button.dart';
 import 'package:provider/provider.dart';
 import 'package:ourdeen/features/memorizing/presentation/viewmodels/memorizing_viewmodel.dart';
+
+
+class FullScreenMemorizationWidget extends StatefulWidget {
+  final String verse;
+  final String translation;
+  final int recitationCount;
+  final bool showRecitationCounter;
+  final VoidCallback onExit;
+  final VoidCallback onRecite;
+  final Function(DragEndDetails) onSwipe;
+
+  const FullScreenMemorizationWidget({
+    super.key,
+    required this.verse,
+    required this.translation,
+    required this.recitationCount,
+    required this.showRecitationCounter,
+    required this.onExit,
+    required this.onRecite,
+    required this.onSwipe,
+  });
+
+  @override
+  State<FullScreenMemorizationWidget> createState() => _FullScreenMemorizationWidgetState();
+}
+
+class _FullScreenMemorizationWidgetState extends State<FullScreenMemorizationWidget> 
+    with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation<double> _fadeAnimation;
+  late Animation<double> _scaleAnimation;
+  late Animation<Offset> _slideAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 600),
+      vsync: this,
+    );
+    
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: const Interval(0.0, 0.5, curve: Curves.easeOut),
+    ));
+    
+    _scaleAnimation = Tween<double>(
+      begin: 0.8,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: const Interval(0.3, 1.0, curve: Curves.elasticOut),
+    ));
+    
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0, 0.2),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: const Interval(0.2, 0.8, curve: Curves.easeOutCubic),
+    ));
+    
+    _animationController.forward();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFF0F172A), // Modern dark blue background
+      body: Stack(
+        children: [
+          // Gradient background overlay
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  const Color(0xFF0F172A).withOpacity(0.8),
+                  const Color(0xFF1E293B).withOpacity(0.9),
+                  const Color(0xFF0F172A).withOpacity(0.8),
+                ],
+              ),
+            ),
+          ),
+          
+          // Full screen verse display
+          GestureDetector(
+            onTap: widget.onExit,
+            child: Container(
+              width: double.infinity,
+              height: double.infinity,
+              padding: const EdgeInsets.all(24.0),
+              child: Center(
+                child: FadeTransition(
+                  opacity: _fadeAnimation,
+                  child: SlideTransition(
+                    position: _slideAnimation,
+                    child: ScaleTransition(
+                      scale: _scaleAnimation,
+                      child: SingleChildScrollView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            // Main Arabic verse with modern styling
+                            AnimatedBuilder(
+                              animation: _animationController,
+                              builder: (context, child) {
+                                return Container(
+                                  padding: const EdgeInsets.all(28.0),
+                                  margin: const EdgeInsets.symmetric(horizontal: 16.0),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFF1E293B).withOpacity(0.6),
+                                    borderRadius: BorderRadius.circular(20),
+                                    border: Border.all(
+                                      color: const Color(0xFF64748B).withOpacity(0.3),
+                                      width: 1.0,
+                                    ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: const Color(0xFF0EA5E9).withOpacity(0.1),
+                                        blurRadius: 20,
+                                        offset: const Offset(0, 10),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Text(
+                                    widget.verse,
+                                    style: GoogleFonts.amiri(
+                                      fontSize: 36.0,
+                                      color: Colors.white,
+                                      height: 2.2,
+                                      fontWeight: FontWeight.w400,
+                                      shadows: [
+                                        Shadow(
+                                          color: Colors.black.withOpacity(0.5),
+                                          offset: const Offset(2.0, 2.0),
+                                          blurRadius: 4.0,
+                                        ),
+                                      ],
+                                    ),
+                                    textAlign: TextAlign.right,
+                                  ),
+                                );
+                              },
+                            ),
+                            const SizedBox(height: 40),
+                            // Translation with modern styling
+                            if (widget.translation.isNotEmpty)
+                              AnimatedBuilder(
+                                animation: _animationController,
+                                builder: (context, child) {
+                                  return Container(
+                                    padding: const EdgeInsets.all(20.0),
+                                    margin: const EdgeInsets.symmetric(horizontal: 16.0),
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFF1E293B).withOpacity(0.4),
+                                      borderRadius: BorderRadius.circular(16),
+                                      border: Border.all(
+                                        color: const Color(0xFF64748B).withOpacity(0.2),
+                                        width: 1.0,
+                                      ),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.1),
+                                          blurRadius: 10,
+                                          offset: const Offset(0, 5),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Text(
+                                      widget.translation,
+                                      style: GoogleFonts.notoSans(
+                                        fontSize: 20.0,
+                                        color: const Color(0xFFE2E8F0),
+                                        height: 1.7,
+                                        fontWeight: FontWeight.w300,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  );
+                                },
+                              ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          
+          // Modern recitation counter with enhanced animation
+          if (widget.showRecitationCounter)
+            AnimatedBuilder(
+              animation: _animationController,
+              builder: (context, child) {
+                return Positioned(
+                  top: 70,
+                  right: 24,
+                  child: FadeTransition(
+                    opacity: Tween<double>(begin: 0.0, end: 1.0).animate(
+                      CurvedAnimation(
+                        parent: _animationController,
+                        curve: const Interval(0.6, 1.0, curve: Curves.easeOut),
+                      ),
+                    ),
+                    child: ScaleTransition(
+                      scale: Tween<double>(begin: 0.8, end: 1.0).animate(
+                        CurvedAnimation(
+                          parent: _animationController,
+                          curve: const Interval(0.65, 1.0, curve: Curves.elasticOut),
+                        ),
+                      ),
+                      child: Container(
+                        padding: const EdgeInsets.all(18.0),
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              Color(0xFF0EA5E9),
+                              Color(0xFF38BDF8),
+                            ],
+                          ),
+                          borderRadius: BorderRadius.circular(24),
+                          boxShadow: [
+                            BoxShadow(
+                              color: const Color(0xFF0EA5E9).withOpacity(0.4),
+                              blurRadius: 20,
+                              offset: const Offset(0, 8),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.mic_external_on_rounded,
+                              color: Colors.white,
+                              size: 32,
+                            ),
+                            const SizedBox(height: 10),
+                            Text(
+                              '${widget.recitationCount}',
+                              style: GoogleFonts.inter(
+                                fontSize: 32,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                            Text(
+                              'Recitations',
+                              style: GoogleFonts.inter(
+                                fontSize: 13,
+                                color: Colors.white.withOpacity(0.85),
+                                fontWeight: FontWeight.w300,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          
+          // Animated exit button
+          AnimatedBuilder(
+            animation: _animationController,
+            builder: (context, child) {
+              return Positioned(
+                top: 70,
+                left: 24,
+                child: FadeTransition(
+                  opacity: Tween<double>(begin: 0.0, end: 1.0).animate(
+                    CurvedAnimation(
+                      parent: _animationController,
+                      curve: const Interval(0.5, 0.8, curve: Curves.easeOut),
+                    ),
+                  ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF334155).withOpacity(0.8),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                        color: const Color(0xFF64748B).withOpacity(0.4),
+                        width: 1.0,
+                      ),
+                    ),
+                    child: IconButton(
+                      icon: Icon(Icons.close, color: Colors.white, size: 28),
+                      onPressed: widget.onExit,
+                      padding: const EdgeInsets.all(12),
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+          
+          // Animated recite instruction indicator at bottom
+          AnimatedBuilder(
+            animation: _animationController,
+            builder: (context, child) {
+              return Positioned(
+                bottom: 80,
+                left: 0,
+                right: 0,
+                child: FadeTransition(
+                  opacity: Tween<double>(begin: 0.0, end: 1.0).animate(
+                    CurvedAnimation(
+                      parent: _animationController,
+                      curve: const Interval(0.7, 1.0, curve: Curves.easeOut),
+                    ),
+                  ),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.tap_and_play_outlined,
+                          color: const Color(0xFF94A3B8).withOpacity(0.7),
+                          size: 20,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Tap anywhere to recite',
+                          style: GoogleFonts.inter(
+                            fontSize: 16,
+                            color: const Color(0xFF94A3B8).withOpacity(0.7),
+                            fontWeight: FontWeight.w300,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+          
+          // Tap to recite overlay with ripple effect
+          Positioned.fill(
+            child: GestureDetector(
+              onTap: () {
+                // Trigger ripple animation
+                widget.onRecite();
+              },
+              onPanEnd: widget.onSwipe,
+              child: Container(
+                color: Colors.transparent, // Makes the overlay clickable
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class TransformByGestured extends StatefulWidget {
+  const TransformByGestured({super.key, required this.child});
+
+  final Widget child;
+
+  @override
+  State<TransformByGestured> createState() => _State();
+}
+
+class _State extends State<TransformByGestured>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation<Offset> _positionAnimation;
+  double _dragStartX = 0;
+  double _currentPosition = 0;
+  double _currentPositionY = 0;
+  double _dragStartY = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 300),
+    );
+    _positionAnimation = Tween<Offset>(
+      begin: Offset.zero,
+      end: Offset.zero,
+    ).animate(_animationController);
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  void _onPanStart(DragStartDetails details) {
+    _dragStartX = details.globalPosition.dx;
+    _dragStartY = details.globalPosition.dy;
+  }
+
+  void _onPanUpdate(DragUpdateDetails details) {
+    setState(() {
+      _currentPosition = details.globalPosition.dx - _dragStartX;
+      _currentPositionY = details.globalPosition.dy - _dragStartY;
+    });
+  }
+
+  void _onPanEnd(DragEndDetails details) {
+    // Threshold for swipe action
+    const threshold = 50.0;
+
+    if (_currentPosition.abs() > threshold) {
+      // Swipe detected
+      if (_currentPosition > 0) {
+        // Swiped right
+        _animateToPosition(300); // Move off screen right
+        print('Swiped right');
+      } else {
+        // Swiped left
+        _animateToPosition(-300); // Move off screen left
+        print('Swiped left');
+      }
+    } else {
+      // Return to original position
+      _animateToPosition(0);
+    }
+  }
+
+  void _animateToPosition(double targetPosition) {
+    _animationController
+        .animateTo(
+      targetPosition.abs() / 300,
+      duration: Duration(milliseconds: 300),
+    )
+        .then((_) {
+      if (targetPosition != 0) {
+        // Card was swiped away, replace with new card
+        setState(() {
+          _currentPosition = 0;
+          _currentPositionY = 0;
+        });
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onPanStart: _onPanStart,
+      onPanUpdate: _onPanUpdate,
+      onPanEnd: _onPanEnd,
+      child: Transform.translate(
+        offset: Offset(_currentPosition, _currentPositionY),
+        child: widget.child,
+      ),
+    );
+  }
+}
+
+
+class ReciteFloatButton extends StatefulWidget {
+  const ReciteFloatButton({super.key});
+
+  @override
+  State<ReciteFloatButton> createState() => _ReciteFloatButtonState();
+}
+
+class _ReciteFloatButtonState extends State<ReciteFloatButton> {
+  var _offset = Offset(0.0, 0.0);
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      left: _offset.dx,
+      top: _offset.dy,
+      child: GestureDetector(
+        onPanUpdate: (details) {
+          setState(() {
+
+            _offset += Offset(details.delta.dx, details.delta.dy);
+          });
+        },
+        child: ElevatedButton.icon(
+          icon: Icon(Icons.numbers),
+          onPressed: () {},
+          label: Text('Recite'),
+        ),
+      ),
+    );
+  }
+}
+
+
+class _BottomNavigation extends StatelessWidget {
+  const _BottomNavigation({
+    required this.currentStep,
+    required this.previousStep,
+    required this.nextStep,
+    required this.verses,
+    required this.visibilityNotifier,
+    this.isFullScreenMode = false,
+  });
+
+  final int currentStep;
+  final VoidCallback previousStep;
+  final VoidCallback nextStep;
+  final List<String> verses;
+  final ValueNotifier<bool> visibilityNotifier;
+  final bool isFullScreenMode;
+
+  static const double _buttonHeightVisible = 90.0;
+  static const double _buttonHeightHidden = 0.0;
+
+  @override
+  Widget build(BuildContext context) {
+    if (isFullScreenMode) {
+      // Return an empty container when in full-screen mode
+      return Container(height: 0);
+    }
+
+    return ValueListenableBuilder<bool>(
+      valueListenable: visibilityNotifier,
+      builder: (context, isVisible, child) {
+        return AnimatedContainer(
+          padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
+          duration: const Duration(milliseconds: 300),
+          height: isVisible ? _buttonHeightVisible : _buttonHeightHidden,
+          child: child,
+        );
+      },
+      child: SafeArea(
+        child: Row(
+          children: [
+            Expanded(
+              child: ElevatedButton(
+                onPressed: currentStep > 0 ? previousStep : null,
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: const Text('Previous'),
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: ElevatedButton(
+                onPressed: nextStep,
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: currentStep < verses.length - 1
+                    ? const Text('Next')
+                    : const Text('Complete'),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
 
 class MemorizationSessionView extends StatefulWidget {
   final int sessionId;
@@ -40,12 +627,15 @@ class _MemorizationSessionViewState extends State<MemorizationSessionView>
 
   var bodyScrollController = ScrollController();
 
+  // Full-screen mode state
+  bool _isFullScreenMode = false;
+  int _recitationCount = 0;
   final List<Map<String, String>> _surahData = [
     // Surah Al-Fatihah (QS 1:1-7)
     {
       'arabic': 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ',
       'translation':
-          'In the name of Allah, the Entirely Merciful, the Especially Merciful.',
+      'In the name of Allah, the Entirely Merciful, the Especially Merciful.',
     },
     {
       'arabic': 'الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ',
@@ -69,9 +659,9 @@ class _MemorizationSessionViewState extends State<MemorizationSessionView>
     },
     {
       'arabic':
-          'صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ',
+      'صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ',
       'translation':
-          'The path of those upon whom You have bestowed favor, not of those who have evoked [Your] anger or of those who are astray.',
+      'The path of those upon whom You have bestowed favor, not of those who have evoked [Your] anger or of those who are astray.',
     },
     // Surah Al-Ikhlas (QS 112:1-4)
     {
@@ -97,9 +687,9 @@ class _MemorizationSessionViewState extends State<MemorizationSessionView>
     },
     {
       'arabic':
-          'لِّيَغْفِرَ لَكَ ٱللَّهُ مَا تَقَدَّمَ مِن ذَنۢبِكَ وَمَا تَأَخَّرَ وَيُتِمَّ نِعْمَتَهُۥ عَلَيْكَ وَيَهْدِيَكَ صِرَٰطًۭا مُّسْتَقِيمًۭا',
+      'لِّيَغْفِرَ لَكَ ٱللَّهُ مَا تَقَدَّمَ مِن ذَنۢبِكَ وَمَا تَأَخَّرَ وَيُتِمَّ نِعْمَتَهُۥ عَلَيْكَ وَيَهْدِيَكَ صِرَٰطًۭا مُّسْتَقِيمًۭا',
       'translation':
-          'so that Allah may forgive you for your past and future shortcomings,1 perfect His favour upon you, guide you along the Straight Path,',
+      'so that Allah may forgive you for your past and future shortcomings,1 perfect His favour upon you, guide you along the Straight Path,',
     },
     {
       'arabic': 'وَيَنصُرَكَ ٱللَّهُ نَصْرًا عَزِيزًا',
@@ -235,183 +825,219 @@ class _MemorizationSessionViewState extends State<MemorizationSessionView>
   bool isScrollingUp = false;
   static const double scrollThreshold = 10.0;
 
+  bool _showRecitationCounter = false;
+
   @override
   Widget build(BuildContext context) {
     final _scaffoldKey = GlobalKey<ScaffoldState>();
-    return Scaffold(
-      key: _scaffoldKey,
-      body: NotificationListener<ScrollNotification>(
-        onNotification: (ScrollNotification notification) {
-          /// TODO : turns out I think no need auto collapse while scrolling the verse because now there is floating button that can handle it.
-          // if (notification is ScrollUpdateNotification) {
-          //   final currentOffset = notification.metrics.pixels;
-          //   final scrollDirection = currentOffset - lastScrollOffset;
-          //
-          //   if (scrollDirection > scrollThreshold) {
-          //     // Scrolling down - hide bottom nav
-          //     showOrHideBottomNav(false);
-          //     isScrollingDown = true;
-          //     isScrollingUp = false;
-          //   } else if (scrollDirection < -scrollThreshold) {
-          //     // Scrolling up - show bottom nav
-          //     showOrHideBottomNav(true);
-          //     isScrollingDown = false;
-          //     isScrollingUp = true;
-          //   }
-          //
-          //   lastScrollOffset = currentOffset;
-          // }
-          return true;
-        },
-        child: Stack(
-          children: [
-            CustomScrollView(
-              controller: bodyScrollController,
-              slivers: [
-                SliverAppBar(
-                  pinned: true,
 
-                  /// expandedHeight it is 150
-                  expandedHeight: 150.0,
-                  // snap: true,
-                  // floating: true,
-                  /// collapsedHeight and add 16 to make space between leading back navigation and progress bar.
-                  collapsedHeight: kToolbarHeight + 16,
-                  bottom: PreferredSize(
-                    preferredSize: const Size.fromHeight(48.0),
+    if (_isFullScreenMode) {
+      // Full-screen mode UI
+      return FullScreenMemorizationWidget(
+        verse: _verses[_currentStep],
+        translation: _translations[_currentStep],
+        recitationCount: _recitationCount,
+        showRecitationCounter: _showRecitationCounter,
+        onExit: _exitFullScreenMode,
+        onRecite: _incrementRecitationCount,
+        onSwipe: _handleSwipeGesture,
+      );
+    } else {
+      // Normal view
+      return Scaffold(
+        key: _scaffoldKey,
+        body: NotificationListener<ScrollNotification>(
+          onNotification: (ScrollNotification notification) {
+            /// TODO : turns out I think no need auto collapse while scrolling the verse because now there is floating button that can handle it.
+            // if (notification is ScrollUpdateNotification) {
+            //   final currentOffset = notification.metrics.pixels;
+            //   final scrollDirection = currentOffset - lastScrollOffset;
+            //
+            //   if (scrollDirection > scrollThreshold) {
+            //     // Scrolling down - hide bottom nav
+            //     showOrHideBottomNav(false);
+            //     isScrollingDown = true;
+            //     isScrollingUp = false;
+            //   } else if (scrollDirection < -scrollThreshold) {
+            //     // Scrolling up - show bottom nav
+            //     showOrHideBottomNav(true);
+            //     isScrollingDown = false;
+            //     isScrollingUp = true;
+            //   }
+            //
+            //   lastScrollOffset = currentOffset;
+            // }
+            return true;
+          },
+          child: Stack(
+            children: [
+              CustomScrollView(
+                controller: bodyScrollController,
+                slivers: [
+                  SliverAppBar(
+                    pinned: true,
+
+                    /// expandedHeight it is 150
+                    expandedHeight: 150.0,
+                    // snap: true,
+                    // floating: true,
+                    /// collapsedHeight and add 16 to make space between leading back navigation and progress bar.
+                    collapsedHeight: kToolbarHeight + 16,
+                    bottom: PreferredSize(
+                      preferredSize: const Size.fromHeight(48.0),
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                          bottom: 12.0,
+                          left: 16.0,
+                          right: 16.0,
+                        ),
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: LinearProgressIndicator(
+                                    value: _progress,
+                                    backgroundColor: Colors.grey[300],
+                                    color: Theme
+                                        .of(context)
+                                        .colorScheme
+                                        .primary,
+                                    minHeight: 8,
+                                    borderRadius: BorderRadius.circular(4),
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  '${(_progress * 100).toInt()}%',
+                                  style: Theme
+                                      .of(context)
+                                      .textTheme
+                                      .bodyMedium,
+                                ),
+                              ],
+                            ),
+                            // Surah info
+                            GestureDetector(
+                              onTap: () {
+                                // This function triggers the bottom sheet and our custom scrim
+                                _scaffoldKey.currentState?.showBottomSheet((
+                                    BuildContext context,) {
+                                  return SizedBox(
+                                    height: 250,
+                                    child: Center(
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment
+                                            .center,
+                                        children: <Widget>[
+                                          const Text(
+                                              'This is the bottom sheet!'),
+                                          const SizedBox(height: 20),
+                                          ElevatedButton(
+                                            child: const Text('Close'),
+                                            onPressed: () =>
+                                                Navigator.pop(context),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                });
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: Theme
+                                      .of(
+                                    context,
+                                  )
+                                      .colorScheme
+                                      .primaryContainer,
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Text(
+                                  'Surah ${widget.surahNumber}:${widget
+                                      .startVerse}-${widget
+                                      .endVerse} (${_currentStep + 1})',
+                                  style: Theme
+                                      .of(context)
+                                      .textTheme
+                                      .titleMedium
+                                      ?.copyWith(fontWeight: FontWeight.bold),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    leading: IconButton(
+                      icon: const Icon(Icons.arrow_back),
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                  ),
+                  SliverFillRemaining(
+                    hasScrollBody: false,
                     child: Padding(
                       padding: const EdgeInsets.only(
-                        bottom: 12.0,
                         left: 16.0,
                         right: 16.0,
+                        bottom: 16.0,
                       ),
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              const SizedBox(width: 8),
-                              Expanded(
-                                child: LinearProgressIndicator(
-                                  value: _progress,
-                                  backgroundColor: Colors.grey[300],
-                                  color: Theme.of(context).colorScheme.primary,
-                                  minHeight: 8,
-                                  borderRadius: BorderRadius.circular(4),
-                                ),
-                              ),
-                              const SizedBox(width: 8),
-                              Text(
-                                '${(_progress * 100).toInt()}%',
-                                style: Theme.of(context).textTheme.bodyMedium,
-                              ),
-                            ],
-                          ),
-                          // Surah info
-                          GestureDetector(
-                            onTap: () {
-                              // This function triggers the bottom sheet and our custom scrim
-                              _scaffoldKey.currentState?.showBottomSheet((
-                                BuildContext context,
-                              ) {
-                                return SizedBox(
-                                  height: 250,
-                                  child: Center(
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        const Text('This is the bottom sheet!'),
-                                        const SizedBox(height: 20),
-                                        ElevatedButton(
-                                          child: const Text('Close'),
-                                          onPressed: () => Navigator.pop(context),
-                                        ),
-                                      ],
+                      child: Visibility(
+                        visible: false,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            // Current verse display
+                            Expanded(
+                              child: FadeTransition(
+                                opacity: _fadeAnimation,
+                                child: SingleChildScrollView(
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  child: ArabicVerseWidget(
+                                    verseText: _verses[_currentStep],
+                                    translation: _translations[_currentStep],
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 24.0,
+                                      horizontal: 16.0,
                                     ),
+                                    maxWidth: 700.0,
                                   ),
-                                );
-                              });
-                            },
-                            child: Container(
-                              padding: const EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.primaryContainer,
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Text(
-                                'Surah ${widget.surahNumber}:${widget.startVerse}-${widget.endVerse} (${_currentStep + 1})',
-                                style: Theme.of(context).textTheme.titleMedium
-                                    ?.copyWith(fontWeight: FontWeight.bold),
-                                textAlign: TextAlign.center,
+                                ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                  leading: IconButton(
-                    icon: const Icon(Icons.arrow_back),
-                    onPressed: () => Navigator.of(context).pop(),
-                  ),
-                ),
-                SliverFillRemaining(
-                  hasScrollBody: false,
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                      left: 16.0,
-                      right: 16.0,
-                      bottom: 16.0,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        // Current verse display
-                        Expanded(
-                          child: FadeTransition(
-                            opacity: _fadeAnimation,
-                            child: SingleChildScrollView(
-                              physics: NeverScrollableScrollPhysics(),
-                              child: ArabicVerseWidget(
-                                verseText: _verses[_currentStep],
-                                translation: _translations[_currentStep],
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 24.0,
-                                  horizontal: 16.0,
-                                ),
-                                maxWidth: 700.0,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            ReciteFloatButton()
-          ],
+                ],
+              ),
+              ReciteFloatButton()
+            ],
+          ),
         ),
-      ),
-      floatingActionButton: _floatingActionBuild(
-        context,
-        visibilityBottomNavNotifier,
-        onPressed: () {
-          var isBottomNavVisible = visibilityBottomNavNotifier.value;
-          showOrHideBottomNav(!isBottomNavVisible);
-        },
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: _BottomNavigation(
-        currentStep: _currentStep,
-        previousStep: _previousStep,
-        nextStep: _nextStep,
-        verses: _verses,
-        visibilityNotifier: visibilityBottomNavNotifier,
-      ),
-    );
+        floatingActionButton: Padding( padding:  EdgeInsets.only(bottom: 18.0),child: FloatingBarActionButton()),
+        // floatingActionButton: _floatingActionBuild(
+        //   context,
+        //   visibilityBottomNavNotifier,
+        //   isFullScreenMode: _isFullScreenMode,
+        //   onPressed: _toggleFullScreenMode,
+        // ),
+        // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        // bottomNavigationBar: _BottomNavigation(
+        //   currentStep: _currentStep,
+        //   previousStep: _previousStep,
+        //   nextStep: _nextStep,
+        //   verses: _verses,
+        //   visibilityNotifier: visibilityBottomNavNotifier,
+        //   isFullScreenMode: _isFullScreenMode, // Pass full screen mode state
+        // ),
+      );
+    }
   }
 
   // This is our custom scrim builder function
@@ -446,230 +1072,119 @@ class _MemorizationSessionViewState extends State<MemorizationSessionView>
       visibilityBottomNavNotifier.value = false;
     }
   }
-}
 
-class ReciteFloatButton extends StatefulWidget {
-  const ReciteFloatButton({super.key});
-
-  @override
-  State<ReciteFloatButton> createState() => _ReciteFloatButtonState();
-}
-
-class _ReciteFloatButtonState extends State<ReciteFloatButton> {
-  var _offset = Offset(0.0, 0.0);
-
-  @override
-  Widget build(BuildContext context) {
-    return Positioned(
-      left: _offset.dx,
-      top: _offset.dy,
-      child: GestureDetector(
-        onPanUpdate: (details) {
-          setState(() {
-
-            _offset += Offset(details.delta.dx, details.delta.dy);
-          });
-        },
-        child: ElevatedButton.icon(
-          icon: Icon(Icons.numbers),
-          onPressed: () {},
-          label: Text('Recite'),
-        ),
-      ),
-    );
-  }
-}
-
-FloatingActionButton? _floatingActionBuild(
-  BuildContext context,
-  ValueNotifier<bool> visibilityBottomNavNotifier, {
-  required VoidCallback onPressed,
-}) {
-  return true
-      ? FloatingActionButton.small(
-          onPressed: onPressed,
-          backgroundColor: Theme.of(context).colorScheme.primary,
-          foregroundColor: Colors.white,
-          elevation: 4.0,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          tooltip: 'Tap to recitation mode',
-          child: ValueListenableBuilder(
-            valueListenable: visibilityBottomNavNotifier,
-            builder: (context, value, child) =>
-                value ? Icon(Icons.fullscreen) : Icon(Icons.fullscreen_exit),
-          ),
-        )
-      : null;
-}
-
-class TransformByGestured extends StatefulWidget {
-  const TransformByGestured({super.key, required this.child});
-
-  final Widget child;
-
-  @override
-  State<TransformByGestured> createState() => _State();
-}
-
-class _State extends State<TransformByGestured>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _animationController;
-  late Animation<Offset> _positionAnimation;
-  double _dragStartX = 0;
-  double _currentPosition = 0;
-  double _currentPositionY = 0;
-  double _dragStartY = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    _animationController = AnimationController(
-      vsync: this,
-      duration: Duration(milliseconds: 300),
-    );
-    _positionAnimation = Tween<Offset>(
-      begin: Offset.zero,
-      end: Offset.zero,
-    ).animate(_animationController);
-  }
-
-  @override
-  void dispose() {
-    _animationController.dispose();
-    super.dispose();
-  }
-
-  void _onPanStart(DragStartDetails details) {
-    _dragStartX = details.globalPosition.dx;
-    _dragStartY = details.globalPosition.dy;
-  }
-
-  void _onPanUpdate(DragUpdateDetails details) {
+  void _toggleFullScreenMode() {
     setState(() {
-      _currentPosition = details.globalPosition.dx - _dragStartX;
-      _currentPositionY = details.globalPosition.dy - _dragStartY;
+      _isFullScreenMode = !_isFullScreenMode;
+      if (_isFullScreenMode) {
+        // Initialize recitation counter when entering full-screen mode
+        _recitationCount = 0;
+        _showRecitationCounter = true;
+      }
     });
   }
 
-  void _onPanEnd(DragEndDetails details) {
-    // Threshold for swipe action
-    const threshold = 50.0;
+  void _exitFullScreenMode() {
+    setState(() {
+      _isFullScreenMode = false;
+    });
+  }
 
-    if (_currentPosition.abs() > threshold) {
-      // Swipe detected
-      if (_currentPosition > 0) {
-        // Swiped right
-        _animateToPosition(300); // Move off screen right
-        print('Swiped right');
-      } else {
-        // Swiped left
-        _animateToPosition(-300); // Move off screen left
-        print('Swiped left');
-      }
-    } else {
-      // Return to original position
-      _animateToPosition(0);
+  void _incrementRecitationCount() {
+    if (_isFullScreenMode) {
+      setState(() {
+        _recitationCount++;
+        // Show animation feedback
+        _showRecitationCounter = true;
+      });
+
+      // Hide the counter after a delay
+      Future.delayed(const Duration(seconds: 2), () {
+        if (_isFullScreenMode && mounted) {
+          setState(() {
+            _showRecitationCounter = false;
+          });
+        }
+      });
     }
   }
 
-  void _animateToPosition(double targetPosition) {
-    _animationController
-        .animateTo(
-          targetPosition.abs() / 300,
-          duration: Duration(milliseconds: 300),
-        )
-        .then((_) {
-          if (targetPosition != 0) {
-            // Card was swiped away, replace with new card
-            setState(() {
-              _currentPosition = 0;
-              _currentPositionY = 0;
-            });
-          }
-        });
+  void _handleSwipeGesture(DragEndDetails details) {
+    if (_isFullScreenMode) {
+      // Check if it's a horizontal swipe
+      if (details.velocity.pixelsPerSecond.dx > 300) {
+        // Swipe right - go to previous verse
+        _previousStep();
+      } else if (details.velocity.pixelsPerSecond.dx < -300) {
+        // Swipe left - go to next verse
+        _nextStep();
+      }
+      // Check if it's a vertical swipe
+      else if (details.velocity.pixelsPerSecond.dy > 300) {
+        // Swipe down - exit full screen
+        _exitFullScreenMode();
+      } else if (details.velocity.pixelsPerSecond.dy < -300) {
+        // Swipe up - increment recitation
+        _incrementRecitationCount();
+      }
+    }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onPanStart: _onPanStart,
-      onPanUpdate: _onPanUpdate,
-      onPanEnd: _onPanEnd,
-      child: Transform.translate(
-        offset: Offset(_currentPosition, _currentPositionY),
-        child: widget.child,
-      ),
-    );
-  }
-}
 
-class _BottomNavigation extends StatelessWidget {
-  const _BottomNavigation({
-    required this.currentStep,
-    required this.previousStep,
-    required this.nextStep,
-    required this.verses,
-    required this.visibilityNotifier,
-  });
-
-  final int currentStep;
-  final VoidCallback previousStep;
-  final VoidCallback nextStep;
-  final List<String> verses;
-  final ValueNotifier<bool> visibilityNotifier;
-
-  static const double _buttonHeightVisible = 90.0;
-  static const double _buttonHeightHidden = 0.0;
-
-  @override
-  Widget build(BuildContext context) {
-    return ValueListenableBuilder<bool>(
-      valueListenable: visibilityNotifier,
-      builder: (context, isVisible, child) {
-        return AnimatedContainer(
-          padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
+  Widget? _floatingActionBuild(BuildContext context,
+      ValueNotifier<bool> visibilityBottomNavNotifier, {
+        required VoidCallback onPressed,
+        bool isFullScreenMode = false,
+      }) {
+    return AnimatedBuilder(
+      animation: Listenable.merge([visibilityBottomNavNotifier]),
+      builder: (context, child) {
+        return AnimatedOpacity(
+          opacity: visibilityBottomNavNotifier.value ? 1.0 : 0.0,
           duration: const Duration(milliseconds: 300),
-          height: isVisible ? _buttonHeightVisible : _buttonHeightHidden,
-          child: child,
+          child: Container(
+            width: 64,
+            height: 64,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: LinearGradient(
+                colors: [
+                  Theme.of(context).colorScheme.primary,
+                  Theme.of(context).colorScheme.primaryContainer,
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Theme.of(context).colorScheme.primary.withOpacity(0.4),
+                  blurRadius: 20,
+                  offset: const Offset(0, 8),
+                ),
+              ],
+            ),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: onPressed,
+                borderRadius: BorderRadius.circular(32),
+                child: Container(
+                  width: 64,
+                  height: 64,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    isFullScreenMode ? Icons.fullscreen_exit : Icons.fullscreen,
+                    color: Colors.white,
+                    size: 28,
+                  ),
+                ),
+              ),
+            ),
+          ),
         );
       },
-      child: SafeArea(
-        child: Row(
-          children: [
-            Expanded(
-              child: ElevatedButton(
-                onPressed: currentStep > 0 ? previousStep : null,
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                child: const Text('Previous'),
-              ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: ElevatedButton(
-                onPressed: nextStep,
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                child: currentStep < verses.length - 1
-                    ? const Text('Next')
-                    : const Text('Complete'),
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
