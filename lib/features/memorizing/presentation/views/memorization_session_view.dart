@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ourdeen/features/memorizing/presentation/viewmodels/memorization_verse_viewmodel.dart';
 import 'package:ourdeen/features/shared/widgets/arabic_verse_widget.dart';
@@ -277,13 +278,13 @@ class _FullScreenMemorizationWidgetState
                             Icon(
                               Icons.mic_external_on_rounded,
                               color: Colors.white,
-                              size: 32,
+                              size: 24,
                             ),
                             const SizedBox(height: 10),
                             Text(
                               '${widget.recitationCount}',
                               style: GoogleFonts.inter(
-                                fontSize: 32,
+                                fontSize: 24,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white,
                               ),
@@ -389,6 +390,8 @@ class _FullScreenMemorizationWidgetState
               onTap: () {
                 // Trigger ripple animation
                 widget.onRecite();
+                // Trigger Haptic
+                HapticFeedback.heavyImpact();
               },
               onPanEnd: widget.onSwipe,
               child: Container(
