@@ -15,6 +15,7 @@ import 'package:ourdeen/features/memorizing/domain/usecases/get_sessions_usecase
 import 'package:ourdeen/features/memorizing/domain/usecases/create_session_usecase.dart';
 import 'package:ourdeen/features/memorizing/domain/usecases/update_session_progress_usecase.dart';
 import 'package:ourdeen/features/memorizing/domain/usecases/update_session_streak_usecase.dart';
+import 'package:ourdeen/features/memorizing/domain/usecases/calculate_memorization_metrics_usecase.dart';
 import 'package:ourdeen/features/memorizing/presentation/viewmodels/memorizing_viewmodel.dart';
 
 class Providers extends StatelessWidget {
@@ -77,12 +78,16 @@ class Providers extends StatelessWidget {
             context.read<MemorizationRepository>(),
           ),
         ),
+        Provider<CalculateMemorizationMetricsUseCase>(
+          create: (context) => const CalculateMemorizationMetricsUseCase(),
+        ),
         ChangeNotifierProvider<MemorizingViewModel>(
           create: (context) => MemorizingViewModel(
             context.read<GetSessionsUseCase>(),
             context.read<CreateSessionUseCase>(),
             context.read<UpdateSessionProgressUseCase>(),
             context.read<UpdateSessionStreakUseCase>(),
+            context.read<CalculateMemorizationMetricsUseCase>(),
           )..loadSessions(),
         ),
       ],
