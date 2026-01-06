@@ -63,6 +63,12 @@ class AlquranCloudService {
   ) =>
       _repository.getSurahWithEditions(number, ['quran-uthmani', ...translations]);
 
+  Future<ApiResponse<List<SurahEntity>>> getSurahWithMultipleEditions(
+    int number,
+    List<String> editions,
+  ) =>
+      _repository.getSurahWithMultipleEditions(number, editions);
+
   // Ayah
 
   Future<ApiResponse<AyahEntity>> getAyah(String reference) => _repository.getAyah(reference);

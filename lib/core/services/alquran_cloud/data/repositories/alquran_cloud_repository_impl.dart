@@ -247,6 +247,39 @@ class AlquranCloudRepositoryImpl implements AlquranCloudRepository {
     }
   }
 
+  @override
+  Future<ApiResponse<List<SurahEntity>>> getSurahWithMultipleEditions(
+    int number,
+    List<String> editions,
+  ) async {
+    try {
+      final editionsStr = editions.join(',');
+      final response = await _api.getSurahWithEditions(number, editionsStr);
+
+      if (response.isSuccess && response.data != null) {
+        final data = response.data;
+        if (data is List && data.isNotEmpty) {
+          // Parse all editions
+          final surahs = data.map((item) {
+            return SurahWithAyahsModel.fromJson(item as Map<String, dynamic>).toEntity();
+          }).toList();
+          return ApiResponse.success(surahs);
+        } else if (data is Map) {
+          // Single edition
+          final surah = SurahWithAyahsModel.fromJson(data as Map<String, dynamic>);
+          return ApiResponse.success([surah.toEntity()]);
+        }
+      }
+
+      return ApiResponse.failure(
+        response.status,
+        response.code,
+      );
+    } catch (e) {
+      return ApiResponse.failure(e.toString());
+    }
+  }
+
   // Ayah endpoints
 
   @override

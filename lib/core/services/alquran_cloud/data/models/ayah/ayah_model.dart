@@ -25,7 +25,14 @@ class AyahModel extends Equatable {
   final int? hizbQuarter;
 
   // Sajda information
-  final bool? sajda;
+  final dynamic sajda;
+
+  // Add a helper getter to check if it's a sajda ayah
+  bool get isSajda {
+    if (sajda is bool) return sajda;
+    if (sajda is Map) return true;
+    return false;
+  }
 
   const AyahModel({
     required this.number,
@@ -67,7 +74,7 @@ class AyahModel extends Equatable {
       page: page,
       ruku: ruku,
       hizbQuarter: hizbQuarter,
-      sajda: sajda,
+      sajda: isSajda,
     );
   }
 
@@ -83,6 +90,6 @@ class AyahModel extends Equatable {
         page,
         ruku,
         hizbQuarter,
-        sajda,
+        isSajda,
       ];
 }

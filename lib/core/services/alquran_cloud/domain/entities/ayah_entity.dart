@@ -59,7 +59,7 @@ class AyahEntity extends Equatable {
   }
 
   /// Returns true if this ayah requires prostration.
-  bool get requiresSajda => sajda == true;
+  bool get isSajda => sajda == true;
 
   @override
   List<Object?> get props => [

@@ -38,6 +38,11 @@ abstract class AlquranCloudRepository {
     List<String> editions,
   );
 
+  Future<ApiResponse<List<SurahEntity>>> getSurahWithMultipleEditions(
+    int number,
+    List<String> editions,
+  );
+
   // Ayah endpoints
 
   Future<ApiResponse<AyahEntity>> getAyah(String reference);

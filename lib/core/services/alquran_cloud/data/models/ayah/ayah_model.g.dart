@@ -19,7 +19,7 @@ AyahModel _$AyahModelFromJson(Map<String, dynamic> json) => AyahModel(
   page: (json['page'] as num?)?.toInt(),
   ruku: (json['ruku'] as num?)?.toInt(),
   hizbQuarter: (json['hizbQuarter'] as num?)?.toInt(),
-  sajda: json['sajda'] as bool?,
+  sajda: json['sajda'],
 );
 
 Map<String, dynamic> _$AyahModelToJson(AyahModel instance) => <String, dynamic>{

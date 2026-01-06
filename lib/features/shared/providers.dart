@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ourdeen/core/services/alquran_cloud/alquran_cloud_provider.dart';
+import 'package:ourdeen/core/services/alquran_cloud/alquran_cloud_service.dart';
 import 'package:ourdeen/features/counter/data/repositories/counter_repository_impl.dart';
 import 'package:ourdeen/features/counter/domain/repositories/counter_repository.dart';
 import 'package:ourdeen/features/counter/domain/usecases/get_counter_usecase.dart';
@@ -10,6 +11,8 @@ import 'package:ourdeen/features/quran_reader/data/repositories/quran_repository
 import 'package:ourdeen/features/quran_reader/domain/repositories/quran_repository.dart';
 import 'package:ourdeen/features/quran_reader/domain/usecases/get_verses_usecase.dart';
 import 'package:ourdeen/features/quran_reader/presentation/viewmodels/quran_reader_viewmodel.dart';
+import 'package:ourdeen/features/quran_reader/presentation/viewmodels/quran_list_viewmodel.dart';
+import 'package:ourdeen/features/quran_reader/domain/usecases/get_surahs_list_usecase.dart';
 import 'package:ourdeen/features/memorizing/data/repositories/memorization_repository_impl.dart';
 import 'package:ourdeen/features/memorizing/domain/repositories/memorization_repository.dart';
 import 'package:ourdeen/features/memorizing/domain/usecases/get_sessions_usecase.dart';
@@ -54,9 +57,21 @@ class Providers extends StatelessWidget {
                 GetVersesUseCase(context.read<QuranRepository>()),
           ),
           ChangeNotifierProvider<QuranReaderViewModel>(
-            create: (context) =>
-                QuranReaderViewModel(context.read<GetVersesUseCase>())
-                  ..loadVerses(),
+            create: (context) => QuranReaderViewModel(
+              context.read<AlquranCloudService>().getSurah,
+              context.read<AlquranCloudService>().getSurahWithMultipleEditions,
+            ),
+          ),
+          Provider<GetSurahsListUseCase>(
+            create: (context) => GetSurahsListUseCase(
+              context.read<AlquranCloudService>().getSurahs,
+            ),
+          ),
+          ChangeNotifierProvider<QuranListViewModel>(
+            create: (context) => QuranListViewModel(
+              context.read<GetSurahsListUseCase>(),
+              context.read<AlquranCloudService>().getEditions,
+            )..initialize(),
           ),
 
           // Memorizing feature providers
