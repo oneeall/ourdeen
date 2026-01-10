@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:ourdeen/features/tajweed/presentation/widgets/tajweed_text.dart';
+import 'package:ourdeen/features/tajweed/presentation/widgets/tajweed_legend_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:ourdeen/core/services/alquran_cloud/domain/entities/edition_entity.dart';
 import 'package:ourdeen/core/theme/theme.dart';
@@ -24,7 +26,6 @@ class QuranReaderView extends StatefulWidget {
 class _QuranReaderViewState extends State<QuranReaderView>
     with TickerProviderStateMixin {
   late AnimationController _controller;
-  late Animation<double> _animation;
 
   @override
   void initState() {
@@ -32,11 +33,6 @@ class _QuranReaderViewState extends State<QuranReaderView>
     _controller = AnimationController(
       duration: const Duration(milliseconds: 1500),
       vsync: this,
-    );
-
-    _animation = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.elasticOut,
     );
 
     // Start the animation when the view loads
@@ -81,6 +77,14 @@ class _QuranReaderViewState extends State<QuranReaderView>
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.of(context).pop(),
         ),
+        actions: [
+          // Tajweed color legend button
+          IconButton(
+            icon: const Icon(Icons.palette_outlined),
+            onPressed: () => TajweedLegendBottomSheet.show(context),
+            tooltip: 'Tajweed Color Legend',
+          ),
+        ],
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
@@ -209,21 +213,33 @@ class _QuranReaderViewState extends State<QuranReaderView>
                   const SizedBox(height: 16),
 
                   // Arabic text with special styling
-                  Text(
-                    verse.arabicText,
-                    style: MaterialTheme.arabicTextStyle.copyWith(
-                      fontSize: 32,
-                      height: 2.2,
-                      shadows: [
-                        Shadow(
-                          offset: const Offset(2, 2),
-                          blurRadius: 4.0,
-                          color: Colors.black.withValues(alpha: 0.1),
-                        ),
-                      ],
-                    ),
-                    textAlign: TextAlign.center,
+                  // Text(
+                  //   verse.arabicText,
+                  //   style: MaterialTheme.arabicTextStyle.copyWith(
+                  //     fontSize: 32,
+                  //     height: 2.2,
+                  //     shadows: [
+                  //       Shadow(
+                  //         offset: const Offset(2, 2),
+                  //         blurRadius: 4.0,
+                  //         color: Colors.black.withValues(alpha: 0.1),
+                  //       ),
+                  //     ],
+                  //   ),
+                  //   textAlign: TextAlign.center,
+                  // ),
+                  DefaultTextStyle(style: MaterialTheme.arabicTextStyle.copyWith(
+                    fontSize: 32,
+                    height: 2.2,
+                    shadows: [
+                      Shadow(
+                        offset: const Offset(2, 2),
+                        blurRadius: 4.0,
+                        color: Colors.black.withValues(alpha: 0.1),
+                      ),
+                    ],
                   ),
+                  child: TajweedText(rawVerse: verse.arabicText)),
                   const SizedBox(height: 12),
 
                   // Translation text (if available)
