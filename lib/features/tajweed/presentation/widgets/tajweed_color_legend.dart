@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ourdeen/features/tajweed/domain/entities/tajweed_color_rule.dart';
+import 'package:ourdeen/features/tajweed/presentation/services/tajweed_color_resolver.dart';
 import 'package:ourdeen/core/theme/theme.dart';
 
 /// A reusable widget that displays the Tajweed color legend
@@ -7,6 +8,9 @@ import 'package:ourdeen/core/theme/theme.dart';
 /// This widget shows all Tajweed color coding rules in an organized,
 /// visually appealing format. It can be used standalone or embedded
 /// in other widgets like bottom sheets or dialogs.
+///
+/// The colors automatically adapt to the current theme (light/dark mode)
+/// while maintaining the 17 distinct colors needed for Tajweed notation.
 ///
 /// Example:
 /// ```dart
@@ -124,6 +128,12 @@ class TajweedColorLegend extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
+    // Resolve the color using the theme-aware resolver
+    final Color color = TajweedColorResolver.resolveFromContext(
+      context,
+      rule.colorType,
+    );
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
@@ -141,7 +151,7 @@ class TajweedColorLegend extends StatelessWidget {
             width: 20,
             height: 20,
             decoration: BoxDecoration(
-              color: rule.color,
+              color: color,
               shape: BoxShape.circle,
               border: Border.all(
                 color: colorScheme.outline.withValues(alpha: 0.3),
@@ -149,7 +159,7 @@ class TajweedColorLegend extends StatelessWidget {
               ),
               boxShadow: [
                 BoxShadow(
-                  color: rule.color.withValues(alpha: 0.3),
+                  color: color.withValues(alpha: 0.3),
                   blurRadius: 4,
                   offset: const Offset(0, 2),
                 ),

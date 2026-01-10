@@ -1,19 +1,22 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
+import 'tajweed_color_type.dart';
 
 /// Value object representing a Tajweed color coding rule
 ///
 /// This entity encapsulates the mapping between Tajweed rule codes,
-/// their descriptions, and their visual representation (color).
+/// their descriptions, and their visual representation (semantic color type).
 /// It follows the Value Object pattern - instances are immutable
 /// and defined by their values, not identity.
+///
+/// This domain entity is framework-agnostic and does NOT depend on Flutter's Color class.
+/// The actual color values are resolved in the presentation layer by TajweedColorResolver.
 ///
 /// Example:
 /// ```dart
 /// final rule = TajweedColorRule(
 ///   code: 'n',
 ///   description: 'Normal Prolongation (2 Vowels)',
-///   color: Color(0xFF537FFF),
+///   colorType: TajweedColorType.normalProlongation,
 /// );
 /// ```
 class TajweedColorRule extends Equatable {
@@ -25,14 +28,15 @@ class TajweedColorRule extends Equatable {
   /// This should be clear and concise for users
   final String description;
 
-  /// The color used to highlight text following this rule
-  /// Matches the colors used in the Tajweed API response
-  final Color color;
+  /// The semantic color type used to identify which color to use
+  /// The actual color values are resolved in the presentation layer
+  /// based on the current theme (light/dark mode).
+  final TajweedColorType colorType;
 
   const TajweedColorRule({
     required this.code,
     required this.description,
-    required this.color,
+    required this.colorType,
   });
 
   /// Creates a copy with modified fields
@@ -42,21 +46,21 @@ class TajweedColorRule extends Equatable {
   TajweedColorRule copyWith({
     String? code,
     String? description,
-    Color? color,
+    TajweedColorType? colorType,
   }) {
     return TajweedColorRule(
       code: code ?? this.code,
       description: description ?? this.description,
-      color: color ?? this.color,
+      colorType: colorType ?? this.colorType,
     );
   }
 
   @override
-  List<Object?> get props => [code, description, color];
+  List<Object?> get props => [code, description, colorType];
 
   @override
   String toString() {
-    return 'TajweedColorRule(code: $code, description: $description, color: $color)';
+    return 'TajweedColorRule(code: $code, description: $description, colorType: $colorType)';
   }
 }
 
@@ -76,6 +80,10 @@ class TajweedColorRule extends Equatable {
 /// 4. Ikhafa rules (purples)
 /// 5. Idgham rules (greens)
 /// 6. Ghunnah (orange)
+///
+/// Note: This domain entity uses semantic color types (TajweedColorType)
+/// instead of Flutter Color objects. The actual color values are resolved
+/// in the presentation layer by TajweedColorResolver.
 class TajweedColorRules {
   TajweedColorRules._();
 
@@ -85,17 +93,17 @@ class TajweedColorRules {
     TajweedColorRule(
       code: 'h',
       description: 'Hamzat ul Wasl',
-      color: Color(0xFFAAAAAA),
+      colorType: TajweedColorType.hamzatUlWasl,
     ),
     TajweedColorRule(
       code: 's',
       description: 'Silent',
-      color: Color(0xFFAAAAAA),
+      colorType: TajweedColorType.silent,
     ),
     TajweedColorRule(
       code: 'l',
       description: 'Lam Shamsiyyah',
-      color: Color(0xFFAAAAAA),
+      colorType: TajweedColorType.lamShamsiyyah,
     ),
   ];
 
@@ -105,22 +113,22 @@ class TajweedColorRules {
     TajweedColorRule(
       code: 'n',
       description: 'Normal Prolongation (2 Vowels)',
-      color: Color(0xFF537FFF),
+      colorType: TajweedColorType.normalProlongation,
     ),
     TajweedColorRule(
       code: 'p',
       description: 'Permissible Prolongation (2,4,6 Vowels)',
-      color: Color(0xFF4050FF),
+      colorType: TajweedColorType.permissibleProlongation,
     ),
     TajweedColorRule(
       code: 'm',
       description: 'Necessary Prolongation (6 Vowels)',
-      color: Color(0xFF000EBC),
+      colorType: TajweedColorType.necessaryProlongation,
     ),
     TajweedColorRule(
       code: 'o',
       description: 'Obligatory Prolongation (4-5 Vowels)',
-      color: Color(0xFF2144C1),
+      colorType: TajweedColorType.obligatoryProlongation,
     ),
   ];
 
@@ -130,7 +138,7 @@ class TajweedColorRules {
     TajweedColorRule(
       code: 'q',
       description: 'Qalaqah (Bouncing Letters)',
-      color: Color(0xFFDD0008),
+      colorType: TajweedColorType.qalaqah,
     ),
   ];
 
@@ -140,12 +148,12 @@ class TajweedColorRules {
     TajweedColorRule(
       code: 'c',
       description: 'Ikhafa\' Shafawi (With Meem)',
-      color: Color(0xFFD500B7),
+      colorType: TajweedColorType.ikhafaShafawi,
     ),
     TajweedColorRule(
       code: 'f',
       description: 'Ikhafa\'',
-      color: Color(0xFF9400A8),
+      colorType: TajweedColorType.ikhafa,
     ),
   ];
 
@@ -155,32 +163,32 @@ class TajweedColorRules {
     TajweedColorRule(
       code: 'w',
       description: 'Idgham Shafawi (With Meem)',
-      color: Color(0xFF58B800),
+      colorType: TajweedColorType.idghamShafawi,
     ),
     TajweedColorRule(
       code: 'i',
       description: 'Iqlab',
-      color: Color(0xFF26BFFD),
+      colorType: TajweedColorType.iqlab,
     ),
     TajweedColorRule(
       code: 'a',
       description: 'Idgham (With Ghunnah)',
-      color: Color(0xFF169777),
+      colorType: TajweedColorType.idghamWithGhunnah,
     ),
     TajweedColorRule(
       code: 'u',
       description: 'Idgham (Without Ghunnah)',
-      color: Color(0xFF169200),
+      colorType: TajweedColorType.idghamWithoutGhunnah,
     ),
     TajweedColorRule(
       code: 'd',
       description: 'Idgham (Mutajanisayn)',
-      color: Color(0xFFA1A1A1),
+      colorType: TajweedColorType.idghamMutajanisayn,
     ),
     TajweedColorRule(
       code: 'b',
       description: 'Idgham (Mutaqaribayn)',
-      color: Color(0xFFA1A1A1),
+      colorType: TajweedColorType.idghamMutaqaribayn,
     ),
   ];
 
@@ -190,7 +198,7 @@ class TajweedColorRules {
     TajweedColorRule(
       code: 'g',
       description: 'Ghunnah (Nasal Sound, 2 Vowels)',
-      color: Color(0xFFFF7E1E),
+      colorType: TajweedColorType.ghunnah,
     ),
   ];
 
@@ -228,10 +236,12 @@ class TajweedColorRules {
     }
   }
 
-  /// Get color for a specific code
+  /// Get color type for a specific code
   ///
-  /// Returns black as a fallback color for unrecognized codes.
-  static Color getColorForCode(String code) {
-    return findByCode(code)?.color ?? Colors.black;
+  /// Returns TajweedColorType.unknown as a fallback for unrecognized codes.
+  /// Note: This returns the semantic color type. Use TajweedColorResolver
+  /// in the presentation layer to get the actual Color value.
+  static TajweedColorType getColorTypeForCode(String code) {
+    return findByCode(code)?.colorType ?? TajweedColorType.unknown;
   }
 }
