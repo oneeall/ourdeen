@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ourdeen/core/services/alquran_cloud/alquran_cloud_provider.dart';
 import 'package:ourdeen/core/services/alquran_cloud/alquran_cloud_service.dart';
+import 'package:ourdeen/core/services/alquran_cloud/domain/repositories/alquran_cloud_repository.dart';
 import 'package:ourdeen/features/counter/data/repositories/counter_repository_impl.dart';
 import 'package:ourdeen/features/counter/domain/repositories/counter_repository.dart';
 import 'package:ourdeen/features/counter/domain/usecases/get_counter_usecase.dart';
@@ -21,6 +22,11 @@ import 'package:ourdeen/features/memorizing/domain/usecases/update_session_progr
 import 'package:ourdeen/features/memorizing/domain/usecases/update_session_streak_usecase.dart';
 import 'package:ourdeen/features/memorizing/domain/usecases/calculate_memorization_metrics_usecase.dart';
 import 'package:ourdeen/features/memorizing/presentation/viewmodels/memorizing_viewmodel.dart';
+import 'package:ourdeen/features/tajweed/data/repositories/tajweed_repository_impl.dart';
+import 'package:ourdeen/features/tajweed/domain/repositories/tajweed_repository.dart';
+import 'package:ourdeen/features/tajweed/domain/usecases/get_tajweed_preference_usecase.dart';
+import 'package:ourdeen/features/tajweed/domain/usecases/update_tajweed_preference_usecase.dart';
+import 'package:ourdeen/features/tajweed/presentation/viewmodels/tajweed_viewmodel.dart';
 
 class Providers extends StatelessWidget {
   final Widget child;
@@ -56,23 +62,6 @@ class Providers extends StatelessWidget {
             create: (context) =>
                 GetVersesUseCase(context.read<QuranRepository>()),
           ),
-          ChangeNotifierProvider<QuranReaderViewModel>(
-            create: (context) => QuranReaderViewModel(
-              context.read<AlquranCloudService>().getSurah,
-              context.read<AlquranCloudService>().getSurahWithMultipleEditions,
-            ),
-          ),
-          Provider<GetSurahsListUseCase>(
-            create: (context) => GetSurahsListUseCase(
-              context.read<AlquranCloudService>().getSurahs,
-            ),
-          ),
-          ChangeNotifierProvider<QuranListViewModel>(
-            create: (context) => QuranListViewModel(
-              context.read<GetSurahsListUseCase>(),
-              context.read<AlquranCloudService>().getEditions,
-            )..initialize(),
-          ),
 
           // Memorizing feature providers
           Provider<MemorizationRepository>(
@@ -107,6 +96,53 @@ class Providers extends StatelessWidget {
               context.read<UpdateSessionStreakUseCase>(),
               context.read<CalculateMemorizationMetricsUseCase>(),
             )..loadSessions(),
+          ),
+
+          // Tajweed feature providers
+          Provider<TajweedRepository>(
+            create: (_) => TajweedRepositoryImpl(),
+          ),
+          Provider<GetTajweedPreferenceUseCase>(
+            create: (context) => GetTajweedPreferenceUseCase(
+              context.read<TajweedRepository>(),
+            ),
+          ),
+          Provider<UpdateTajweedPreferenceUseCase>(
+            create: (context) => UpdateTajweedPreferenceUseCase(
+              context.read<TajweedRepository>(),
+            ),
+          ),
+          ChangeNotifierProvider<TajweedViewModel>(
+            create: (context) => TajweedViewModel(
+              context.read<GetTajweedPreferenceUseCase>(),
+              context.read<UpdateTajweedPreferenceUseCase>(),
+            )..loadPreference(),
+          ),
+
+          // AlquranCloudService provided here to access TajweedViewModel
+          Provider<AlquranCloudService>(
+            create: (context) => AlquranCloudService(
+              context.read<AlquranCloudRepository>(),
+              tajweedViewModel: context.read<TajweedViewModel>(),
+            ),
+          ),
+
+          // Quran reader ViewModels that depend on AlquranCloudService
+          ChangeNotifierProvider<QuranReaderViewModel>(
+            create: (context) => QuranReaderViewModel(
+              context.read<AlquranCloudService>(),
+            ),
+          ),
+          Provider<GetSurahsListUseCase>(
+            create: (context) => GetSurahsListUseCase(
+              context.read<AlquranCloudService>(),
+            ),
+          ),
+          ChangeNotifierProvider<QuranListViewModel>(
+            create: (context) => QuranListViewModel(
+              context.read<GetSurahsListUseCase>(),
+              context.read<AlquranCloudService>(),
+            ),
           ),
         ],
         child: child,

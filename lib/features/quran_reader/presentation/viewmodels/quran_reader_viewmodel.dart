@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:ourdeen/core/services/alquran_cloud/alquran_cloud_service.dart';
 import 'package:ourdeen/core/services/alquran_cloud/domain/entities/surah_entity.dart';
 import 'package:ourdeen/core/services/alquran_cloud/domain/entities/edition_entity.dart';
 import 'package:ourdeen/core/services/network/api_response.dart';
@@ -22,11 +23,7 @@ class VerseDisplay {
 }
 
 class QuranReaderViewModel extends BaseViewModel {
-  final Future<ApiResponse<SurahEntity>> Function(int surahNumber) _getSurah;
-  final Future<ApiResponse<List<SurahEntity>>> Function(
-    int surahNumber,
-    List<String> editions,
-  ) _getSurahWithMultipleEditions;
+  final AlquranCloudService _alquranCloudService;
 
   // Surah info
   SurahEntity? _surah;
@@ -48,10 +45,7 @@ class QuranReaderViewModel extends BaseViewModel {
   EditionEntity? _translationEdition;
   EditionEntity? get translationEdition => _translationEdition;
 
-  QuranReaderViewModel(
-    this._getSurah,
-    this._getSurahWithMultipleEditions,
-  );
+  QuranReaderViewModel(this._alquranCloudService);
 
   /// Load a specific surah with optional translation edition.
   Future<void> loadSurah(
@@ -65,10 +59,10 @@ class QuranReaderViewModel extends BaseViewModel {
 
     try {
       if (translationEdition != null) {
-        // Fetch with Arabic and translation
-        final response = await _getSurahWithMultipleEditions(
+        // Fetch with Arabic and translation - uses dynamic Tajweed-aware edition
+        final response = await _alquranCloudService.getSurahWithMultipleEditions(
           surahNumber,
-          ['quran-uthmani', translationEdition.identifier],
+          [_alquranCloudService.currentArabicEdition, translationEdition.identifier],
         );
 
         if (response.success && response.data != null) {
@@ -86,7 +80,7 @@ class QuranReaderViewModel extends BaseViewModel {
         }
       } else {
         // Fetch only Arabic
-        final response = await _getSurah(surahNumber);
+        final response = await _alquranCloudService.getSurah(surahNumber);
 
         if (response.success && response.data != null) {
           final surahEntity = response.data!;

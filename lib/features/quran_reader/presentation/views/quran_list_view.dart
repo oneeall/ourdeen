@@ -5,6 +5,7 @@ import 'package:ourdeen/core/services/alquran_cloud/domain/entities/edition_enti
 import 'package:ourdeen/features/quran_reader/domain/entities/surah_list_item.dart';
 import 'package:ourdeen/features/quran_reader/presentation/viewmodels/quran_list_viewmodel.dart';
 import 'package:ourdeen/features/quran_reader/presentation/views/surah_preview_bottom_sheet.dart';
+import 'package:ourdeen/features/settings/presentation/views/settings_view.dart';
 
 class QuranListView extends StatefulWidget {
   const QuranListView({super.key});
@@ -42,6 +43,12 @@ class _QuranListViewState extends State<QuranListView>
       _headerController.forward();
       _listController.forward();
     });
+
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
 
     // Initialize view model
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -81,29 +88,46 @@ class _QuranListViewState extends State<QuranListView>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Header with title
+              // Header with title and settings button
               ScaleTransition(
                 scale: _headerAnimation,
-                child: Column(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      'Quran',
-                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).colorScheme.primary,
+                    Expanded(
+                      child: Column(
+                        children: [
+                          Text(
+                            'Quran',
+                            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                            textAlign: TextAlign.center,
                           ),
-                      textAlign: TextAlign.center,
+                          const SizedBox(height: 8),
+                          Text(
+                            '114 Surahs',
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onSurface
+                                      .withValues(alpha: 0.7),
+                                ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
                     ),
-                    const SizedBox(height: 8),
-                    Text(
-                      '114 Surahs',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .onSurface
-                                .withValues(alpha: 0.7),
-                          ),
-                      textAlign: TextAlign.center,
+                    IconButton(
+                      icon: const Icon(Icons.settings),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const SettingsView()),
+                        );
+                      },
+                      tooltip: 'Settings',
                     ),
                   ],
                 ),

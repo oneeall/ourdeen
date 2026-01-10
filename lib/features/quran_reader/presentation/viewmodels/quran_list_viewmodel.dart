@@ -1,13 +1,13 @@
 import 'package:flutter/foundation.dart';
+import 'package:ourdeen/core/services/alquran_cloud/alquran_cloud_service.dart';
 import 'package:ourdeen/core/services/alquran_cloud/domain/entities/edition_entity.dart';
-import 'package:ourdeen/core/services/network/api_response.dart';
 import 'package:ourdeen/features/shared/base_viewmodel.dart';
 import 'package:ourdeen/features/quran_reader/domain/entities/surah_list_item.dart';
 import 'package:ourdeen/features/quran_reader/domain/usecases/get_surahs_list_usecase.dart';
 
 class QuranListViewModel extends BaseViewModel {
   final GetSurahsListUseCase _getSurahsListUseCase;
-  final Future<ApiResponse<List<EditionEntity>>> Function() _getEditions;
+  final AlquranCloudService _alquranCloudService;
 
   List<SurahListItem> _surahs = [];
   List<SurahListItem> get surahs => _surahs;
@@ -26,7 +26,7 @@ class QuranListViewModel extends BaseViewModel {
 
   QuranListViewModel(
     this._getSurahsListUseCase,
-    this._getEditions,
+    this._alquranCloudService,
   );
 
   /// Initialize the view model by loading surahs and editions.
@@ -57,7 +57,7 @@ class QuranListViewModel extends BaseViewModel {
   /// Load available translation editions.
   Future<void> loadEditions() async {
     try {
-      final response = await _getEditions();
+      final response = await _alquranCloudService.getEditions();
       if (response.success && response.data != null) {
         // Filter only translation editions
         _editions = response.data!

@@ -11,15 +11,31 @@ import 'package:ourdeen/core/services/alquran_cloud/domain/entities/manzil_entit
 import 'package:ourdeen/core/services/alquran_cloud/domain/entities/ruku_entity.dart';
 import 'package:ourdeen/core/services/alquran_cloud/domain/entities/sajda_entity.dart';
 import 'package:ourdeen/core/services/alquran_cloud/domain/entities/search_result_entity.dart';
+import 'package:ourdeen/features/tajweed/presentation/viewmodels/tajweed_viewmodel.dart';
 
 /// Facade service for easy access to Alquran.cloud API.
 ///
 /// Provides a simplified interface for features to use,
 /// with convenient methods for common operations.
+///
+/// When [tajweedViewModel] is provided, automatically uses
+/// 'quran-tajweed' edition when Tajweed mode is enabled.
 class AlquranCloudService {
   final AlquranCloudRepository _repository;
+  final TajweedViewModel? _tajweedViewModel;
 
-  AlquranCloudService(this._repository);
+  AlquranCloudService(this._repository, {TajweedViewModel? tajweedViewModel})
+      : _tajweedViewModel = tajweedViewModel;
+
+  /// Get the Arabic edition identifier based on current Tajweed setting
+  ///
+  /// When Tajweed is enabled, returns 'quran-tajweed' which contains
+  /// color-coded Tajweed rules. Otherwise returns 'quran-uthmani'.
+  String get _arabicEdition => _tajweedViewModel?.arabicEdition ?? 'quran-uthmani';
+
+  /// Public getter for the current Arabic edition
+  /// Allows ViewModels to access the dynamically determined Arabic edition
+  String get currentArabicEdition => _arabicEdition;
 
   // Edition
 
@@ -42,8 +58,8 @@ class AlquranCloudService {
 
   // Quran
 
-  Future<ApiResponse<QuranEntity>> getQuran([String edition = 'quran-uthmani']) =>
-      _repository.getQuran(edition);
+  Future<ApiResponse<QuranEntity>> getQuran([String? edition]) =>
+      _repository.getQuran(edition ?? _arabicEdition);
 
   // Surah
 
@@ -55,13 +71,13 @@ class AlquranCloudService {
     int number, [
     String translationEdition = 'en.sahih',
   ]) =>
-      _repository.getSurahWithEditions(number, ['quran-uthmani', translationEdition]);
+      _repository.getSurahWithEditions(number, [_arabicEdition, translationEdition]);
 
   Future<ApiResponse<SurahEntity>> getSurahWithMultipleTranslations(
     int number,
     List<String> translations,
   ) =>
-      _repository.getSurahWithEditions(number, ['quran-uthmani', ...translations]);
+      _repository.getSurahWithEditions(number, [_arabicEdition, ...translations]);
 
   Future<ApiResponse<List<SurahEntity>>> getSurahWithMultipleEditions(
     int number,
@@ -79,7 +95,7 @@ class AlquranCloudService {
   ]) async {
     final response = await _repository.getAyahWithEditions(
       reference,
-      ['quran-uthmani', translationEdition],
+      [_arabicEdition, translationEdition],
     );
     if (response.success && response.data != null && response.data!.isNotEmpty) {
       return ApiResponse.success(response.data!.first, response.statusCode ?? 200);
@@ -113,33 +129,33 @@ class AlquranCloudService {
 
   // Juz
 
-  Future<ApiResponse<JuzEntity>> getJuz(int number, [String edition = 'quran-uthmani']) =>
-      _repository.getJuzWithEdition(number, edition);
+  Future<ApiResponse<JuzEntity>> getJuz(int number, [String? edition]) =>
+      _repository.getJuzWithEdition(number, edition ?? _arabicEdition);
 
   // Page
 
-  Future<ApiResponse<PageEntity>> getPage(int number, [String edition = 'quran-uthmani']) =>
-      _repository.getPageWithEdition(number, edition);
+  Future<ApiResponse<PageEntity>> getPage(int number, [String? edition]) =>
+      _repository.getPageWithEdition(number, edition ?? _arabicEdition);
 
   // Hizb
 
-  Future<ApiResponse<HizbEntity>> getHizb(int number, [String edition = 'quran-uthmani']) =>
-      _repository.getHizbWithEdition(number, edition);
+  Future<ApiResponse<HizbEntity>> getHizb(int number, [String? edition]) =>
+      _repository.getHizbWithEdition(number, edition ?? _arabicEdition);
 
   // Manzil
 
-  Future<ApiResponse<ManzilEntity>> getManzil(int number, [String edition = 'quran-uthmani']) =>
-      _repository.getManzilWithEdition(number, edition);
+  Future<ApiResponse<ManzilEntity>> getManzil(int number, [String? edition]) =>
+      _repository.getManzilWithEdition(number, edition ?? _arabicEdition);
 
   // Ruku
 
-  Future<ApiResponse<RukuEntity>> getRuku(int number, [String edition = 'quran-uthmani']) =>
-      _repository.getRukuWithEdition(number, edition);
+  Future<ApiResponse<RukuEntity>> getRuku(int number, [String? edition]) =>
+      _repository.getRukuWithEdition(number, edition ?? _arabicEdition);
 
   // Sajda
 
-  Future<ApiResponse<SajdaEntity>> getSajda([String edition = 'quran-uthmani']) =>
-      _repository.getSajdaWithEdition(edition);
+  Future<ApiResponse<SajdaEntity>> getSajda([String? edition]) =>
+      _repository.getSajdaWithEdition(edition ?? _arabicEdition);
 
   // Meta
 

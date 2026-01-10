@@ -4,11 +4,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'data/datasources/alquran_cloud_api.dart';
 import 'data/repositories/alquran_cloud_repository_impl.dart';
 import 'domain/repositories/alquran_cloud_repository.dart';
-import 'alquran_cloud_service.dart';
 
-/// Provider setup for AlquranCloud service.
+/// Provider setup for AlquranCloud infrastructure.
 ///
-/// Wraps the app with providers for API client, repository, and service.
+/// Wraps the app with providers for API client and repository.
+/// AlquranCloudService is provided separately in lib/features/shared/providers.dart
+/// to allow it to access feature ViewModels like TajweedViewModel.
+///
 /// Must be placed at the root of the widget tree.
 class AlquranCloudProvider extends StatelessWidget {
   final Widget child;
@@ -43,12 +45,6 @@ class AlquranCloudProvider extends StatelessWidget {
               create: (context) => AlquranCloudRepositoryImpl(
                 api: context.read<AlquranCloudApi>(),
                 prefs: prefs,
-              ),
-            ),
-
-            Provider<AlquranCloudService>(
-              create: (context) => AlquranCloudService(
-                context.read<AlquranCloudRepository>(),
               ),
             ),
           ],
