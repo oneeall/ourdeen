@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:ourdeen/core/services/alquran_cloud/alquran_cloud_service.dart';
 import 'package:ourdeen/core/services/alquran_cloud/domain/entities/surah_entity.dart';
 import 'package:ourdeen/core/services/alquran_cloud/domain/entities/edition_entity.dart';
-import 'package:ourdeen/core/services/network/api_response.dart';
 import 'package:ourdeen/features/shared/base_viewmodel.dart';
 
 /// Display model for a verse with Arabic text and translation.

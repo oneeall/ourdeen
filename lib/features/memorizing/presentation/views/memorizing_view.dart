@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:ourdeen/factory_pattern/factory_example.dart';
 import 'package:ourdeen/features/memorizing/domain/entities/memorization_session.dart';
 import 'package:provider/provider.dart';
 import 'package:ourdeen/features/memorizing/presentation/viewmodels/memorizing_viewmodel.dart';

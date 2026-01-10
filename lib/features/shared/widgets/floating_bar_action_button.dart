@@ -57,7 +57,7 @@ class _FloatingBarActionButtonState extends State<FloatingBarActionButton> {
 }
 
 class _MenuFloatingAnimated extends StatefulWidget {
-  const _MenuFloatingAnimated({super.key, required this.onPressed});
+  const _MenuFloatingAnimated({required this.onPressed});
 
   final VoidCallback onPressed;
 
@@ -132,7 +132,7 @@ class _MenuFloatingAnimatedState extends State<_MenuFloatingAnimated>
 class _SpringCurve extends Curve {
   final SpringSimulation simulation;
 
-  _SpringCurve(this.simulation);
+  const _SpringCurve(this.simulation);
 
   @override
   double transform(double t) {
@@ -157,7 +157,7 @@ class _SpringCurve extends Curve {
 }
 
 class _ToolbarFloatingAnimated extends StatefulWidget {
-  const _ToolbarFloatingAnimated({super.key, required this.targetNotifier});
+  const _ToolbarFloatingAnimated({required this.targetNotifier});
 
   final ValueNotifier<double> targetNotifier;
 
@@ -192,7 +192,7 @@ class _ToolbarFloatingAnimatedState extends State<_ToolbarFloatingAnimated> {
 }
 
 class _ToolbarFloating extends StatelessWidget {
-  const _ToolbarFloating({super.key});
+  const _ToolbarFloating();
 
   @override
   Widget build(BuildContext context) {

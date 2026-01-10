@@ -513,7 +513,7 @@ class _BottomNavigation extends StatelessWidget {
     required this.nextStep,
     required this.verses,
     required this.visibilityNotifier,
-    this.isFullScreenMode = false,
+    required this.isFullScreenMode,
   });
 
   final int currentStep;
@@ -825,7 +825,7 @@ class _MemorizationSessionViewState extends State<MemorizationSessionView>
 
   @override
   Widget build(BuildContext context) {
-    final _scaffoldKey = GlobalKey<ScaffoldState>();
+    final scaffoldKey = GlobalKey<ScaffoldState>();
 
     if (_isFullScreenMode) {
       // Full-screen mode UI
@@ -855,7 +855,7 @@ class _MemorizationSessionViewState extends State<MemorizationSessionView>
           )..changeVerse();
         },
         child: Scaffold(
-          key: _scaffoldKey,
+          key: scaffoldKey,
           body: CustomScrollView(
             controller: bodyScrollController,
             slivers: [
@@ -901,7 +901,7 @@ class _MemorizationSessionViewState extends State<MemorizationSessionView>
                         GestureDetector(
                           onTap: () {
                             // This function triggers the bottom sheet and our custom scrim
-                            _scaffoldKey.currentState?.showBottomSheet((
+                            scaffoldKey.currentState?.showBottomSheet((
                               BuildContext context,
                             ) {
                               return SizedBox(

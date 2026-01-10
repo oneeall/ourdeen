@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/physics.dart';
-import 'package:motor/motor.dart';
-import 'package:ourdeen/features/memorizing/presentation/views/memorizing_view.dart';
+import 'package:ourdeen/features/quran_reader/presentation/views/quran_list_view.dart';
 
 import 'core/theme/theme.dart';
 import 'core/theme/util.dart';
 import 'features/shared/providers.dart';
-import 'features/shared/widgets/floating_bar_action_button.dart';
 
 void main() {
   runApp(const MyApp());
@@ -33,8 +30,10 @@ class MyApp extends StatelessWidget {
         //   useMaterial3: true,
         // ),
         theme: brightness == Brightness.light ? theme.light() : theme.dark(),
-        home: const MemorizingView(),
+        // home: const MemorizingView(),
+        // home: QuranReaderView()
         // home: Counter2Page(),
+        home: QuranListView(),
       ),
     );
   }

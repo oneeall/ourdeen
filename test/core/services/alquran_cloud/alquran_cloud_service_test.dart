@@ -3,7 +3,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ourdeen/core/services/alquran_cloud/alquran_cloud_service.dart';
 import 'package:ourdeen/core/services/alquran_cloud/data/repositories/alquran_cloud_repository_impl.dart';
 import 'package:ourdeen/core/services/alquran_cloud/data/datasources/alquran_cloud_api.dart';
-import 'package:ourdeen/core/services/alquran_cloud/domain/entities/surah_entity.dart';
 
 void main() {
   late AlquranCloudService service;

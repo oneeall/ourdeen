@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:ourdeen/core/theme/theme.dart';
 import 'package:provider/provider.dart';
 import 'package:ourdeen/features/counter/presentation/viewmodels/counter_viewmodel.dart';
 

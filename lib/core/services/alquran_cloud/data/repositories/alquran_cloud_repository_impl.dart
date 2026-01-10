@@ -214,7 +214,7 @@ class AlquranCloudRepositoryImpl implements AlquranCloudRepository {
         response.status,
         response.code,
       );
-    } catch (e, stackTrace) {
+    } catch (e) {
       return ApiResponse.failure(e.toString());
     }
   }

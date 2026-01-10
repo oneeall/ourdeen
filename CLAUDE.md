@@ -4,36 +4,39 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Common Commands
 
-### Build & Run
+### Flutter Version Management (FVM)
+This project uses FVM to manage Flutter versions. Use `fvm flutter` instead of `flutter`:
 ```bash
-flutter run                    # Run the app
-flutter pub get               # Install dependencies
+fvm flutter run              # Run the app
+fvm flutter pub get          # Install dependencies
+fvm flutter test             # Run tests
+fvm flutter analyze          # Analyze code
 ```
 
 ### Code Generation
 ```bash
 # Generate JSON serialization code (after modifying models with @JsonSerializable)
-flutter pub run build_runner build --delete-conflicting-outputs
+fvm flutter pub run build_runner build --delete-conflicting-outputs
 ```
 
 ### Testing
 ```bash
 # Run all tests
-flutter test
+fvm flutter test
 
 # Run specific test file
-flutter test test/core/services/alquran_cloud/alquran_cloud_service_test.dart
+fvm flutter test test/core/services/alquran_cloud/alquran_cloud_service_test.dart
 
 # Run a specific test by name
-flutter test --plain-name "test name"
+fvm flutter test --plain-name "test name"
 
 # Run tests with coverage
-flutter test --coverage
+fvm flutter test --coverage
 ```
 
 ### Linting
 ```bash
-flutter analyze               # Analyze code for issues
+fvm flutter analyze          # Analyze code for issues
 ```
 
 ## Architecture Overview
@@ -65,6 +68,8 @@ lib/
 │   │
 │   ├── quran_reader/                # Quran reading feature
 │   ├── memorizing/                  # Gamified memorization feature
+│   ├── tajweed/                     # Tajweed settings feature
+│   ├── settings/                    # Centralized settings page
 │   └── counter/                     # Example feature
 │
 └── main.dart                         # App entry point
@@ -90,7 +95,7 @@ lib/
 All dependencies are wired in `lib/features/shared/providers.dart`:
 
 ```dart
-AlquranCloudProvider              // API service (root level)
+AlquranCloudProvider              // API service wrapper
   └── MultiProvider
       ├── Provider<Repository>    // Repository interface
       ├── Provider<UseCase>        // Use cases depend on repository
@@ -98,6 +103,12 @@ AlquranCloudProvider              // API service (root level)
 ```
 
 **Key Pattern:** ViewModels call Use Cases → Use Cases call Repository Interface → Repository Implementation accesses data
+
+**Critical Provider Ordering:**
+When adding new features that depend on `AlquranCloudService`, ensure correct order:
+1. Features whose ViewModels are read by `AlquranCloudService` (e.g., `TajweedViewModel`)
+2. `AlquranCloudService` (reads above ViewModels)
+3. Features that depend on `AlquranCloudService` (e.g., `QuranReaderViewModel`)
 
 ### BaseViewModel
 
@@ -121,20 +132,48 @@ The Quran API service follows clean architecture:
 - Individual Surah/Ayah: 1 day
 - Search: 1 hour (user-generated)
 
+**Dynamic Arabic Edition:**
+When `TajweedViewModel` is injected, `AlquranCloudService` automatically switches Arabic editions:
+- Tajweed enabled → `quran-tajweed` (color-coded Tajweed rules)
+- Tajweed disabled → `quran-uthmani` (standard Uthmani script)
+
 **Important:** When adding new API endpoints:
 1. Add entity to `domain/entities/`
 2. Add model to `data/models/` with `@JsonSerializable()`
 3. Add method to `domain/repositories/alquran_cloud_repository.dart`
 4. Implement in `data/repositories/alquran_cloud_repository_impl.dart`
 5. Add convenience method to `alquran_cloud_service.dart`
-6. Run `flutter pub run build_runner build --delete-conflicting-outputs`
+6. Run `fvm flutter pub run build_runner build --delete-conflicting-outputs`
 
 ### Value Objects
 
 Domain objects that are defined by their values (not identity) and should be immutable:
 - Use `Equatable` for value equality
 - Provide `copyWith()` method for creating updated instances
-- Examples: `MemorizationMetrics` (see `lib/features/memorizing/domain/entities/VALUE_OBJECT_LEARNING.md`)
+- Examples: `MemorizationMetrics`, `TajweedPreference`
+
+See `lib/features/memorizing/domain/entities/VALUE_OBJECT_LEARNING.md` for detailed learning on value objects.
+
+### Settings Architecture
+
+Settings is a **separate feature** that composes ViewModels from other features:
+
+```dart
+// settings_view.dart consumes TajweedViewModel
+Consumer<TajweedViewModel>(
+  builder: (context, viewModel, child) {
+    return SwitchListTile(
+      value: viewModel.isTajweedEnabled,
+      onChanged: (value) => viewModel.toggleTajweed(value),
+    );
+  },
+)
+```
+
+**Benefits:**
+- Each feature owns its settings logic
+- Settings feature is a UI composition layer
+- Easy to add new settings (create feature, add widget to SettingsView)
 
 ### Testing Notes
 
@@ -148,7 +187,7 @@ Domain objects that are defined by their values (not identity) and should be imm
 
 Models use `json_serializable` package. After modifying any model:
 ```bash
-flutter pub run build_runner build --delete-conflicting-outputs
+fvm flutter pub run build_runner build --delete-conflicting-outputs
 ```
 
 ### AyahModel Edition Field
@@ -168,21 +207,51 @@ The `AlquranCloudRepositoryImpl` checks cache before making API calls. Cache key
 
 ## Features Overview
 
+### Quran Reader Feature
+
+Clean, minimalist interface for reading Quran verses with proper Arabic typography.
+
+**Key Files:**
+- `lib/features/quran_reader/presentation/viewmodels/quran_reader_viewmodel.dart` - Display model with verse/translation pairing
+- `lib/features/quran_reader/presentation/viewmodels/quran_list_viewmodel.dart` - Surah list with edition management
+- `lib/features/quran_reader/presentation/views/quran_list_view.dart` - Surah list with settings navigation
+
 ### Memorizing Feature
 
 Gamified Quran memorization with progress tracking, streaks, and session management.
 
 **Key Files:**
 - `lib/features/memorizing/presentation/views/memorizing_view.dart` - Main dashboard
+- `lib/features/memorizing/presentation/views/memorization_session_view.dart` - Session practice view
 - `lib/features/memorizing/domain/usecases/calculate_memorization_metrics_usecase.dart` - Metrics calculation
 - `lib/features/memorizing/domain/entities/memorization_metrics.dart` - Value object for metrics
 
 **Documentation:** See `lib/features/memorizing/README.md` for detailed workflow and architecture.
 
-### Quran Reader Feature
+### Tajweed Feature
 
-Clean, minimalist interface for reading Quran verses with proper Arabic typography.
+Toggleable Tajweed mode that switches Quran text between standard Uthmani and color-coded Tajweed editions.
+
+**Key Files:**
+- `lib/features/tajweed/presentation/viewmodels/tajweed_viewmodel.dart` - Manages Tajweed state and provides `arabicEdition` getter
+- `lib/features/tajweed/domain/entities/tajweed_preference.dart` - Value object with `arabicEdition` computed property
+- `lib/features/tajweed/data/repositories/tajweed_repository_impl.dart` - SharedPreferences persistence
+
+**Integration:**
+- `AlquranCloudService` accepts optional `TajweedViewModel` dependency
+- When provided, uses `tajweedViewModel.arabicEdition` for all Arabic text requests
+- `SettingsView` consumes `TajweedViewModel` for the toggle UI
 
 ### Counter Feature
 
 Example feature demonstrating the DDD+MVVM pattern. Use as reference when adding new features.
+
+## Key Dependencies
+
+- **provider**: ^6.1.1 - State management
+- **shared_preferences**: 2.5.3 - Local persistence
+- **google_fonts**: ^6.3.1 - Typography
+- **equatable**: ^2.0.7 - Value object equality
+- **http**: ^1.1.0 - API requests
+- **json_serializable**: ^6.7.1 - JSON code generation
+- **build_runner**: ^2.4.6 - Code generation runner
