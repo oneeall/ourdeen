@@ -10,11 +10,14 @@ import 'package:ourdeen/features/tajweed/presentation/services/tajweed_color_res
 /// The colors automatically adapt to the current theme (light/dark mode)
 /// while maintaining the 17 distinct colors needed for Tajweed notation.
 ///
+/// OPTIMIZATION: Caches parsed spans to avoid re-parsing on rebuilds.
+/// Only re-parses when the text content or theme brightness changes.
+///
 /// Example:
 /// ```dart
 /// TajweedText(rawVerse: 'إِ[g[نّ]َا فَتَحْنَا لَكَ فَتْ[a:12625[حًا م]ُّبِينًا')
 /// ```
-class TajweedText extends StatelessWidget {
+class TajweedText extends StatefulWidget {
   const TajweedText({super.key, required this.rawVerse});
 
   /// The raw Tajweed text with markup tags
@@ -22,15 +25,35 @@ class TajweedText extends StatelessWidget {
   final String rawVerse;
 
   @override
+  State<TajweedText> createState() => _TajweedTextState();
+}
+
+class _TajweedTextState extends State<TajweedText> {
+  // OPTIMIZATION: Cache the parsed spans to avoid re-parsing on every rebuild
+  List<InlineSpan>? _cachedSpans;
+  String? _cachedText;
+  Brightness? _cachedBrightness;
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final brightness = theme.brightness;
+
+    // Check if we need to re-parse (only if text or brightness changed)
+    if (_cachedSpans == null ||
+        _cachedText != widget.rawVerse ||
+        _cachedBrightness != brightness) {
+      _cachedSpans = _parseTajweed(context, widget.rawVerse, brightness);
+      _cachedText = widget.rawVerse;
+      _cachedBrightness = brightness;
+    }
 
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Text.rich(
         TextSpan(
-          children: _parseTajweed(context, rawVerse),
+          children: _cachedSpans,
           style: GoogleFonts.amiri(
             fontSize: 28,
             height: 2.0,
@@ -51,7 +74,14 @@ class TajweedText extends StatelessWidget {
   ///
   /// Colors are resolved using [TajweedColorResolver] which automatically
   /// adapts to the current theme (light/dark mode).
-  List<InlineSpan> _parseTajweed(BuildContext context, String text) {
+  ///
+  /// OPTIMIZATION: Uses pre-fetched brightness to avoid calling Theme.of
+  /// repeatedly during parsing.
+  List<InlineSpan> _parseTajweed(
+    BuildContext context,
+    String text,
+    Brightness brightness,
+  ) {
     final regex = RegExp(r'\[([a-z])(?::\d+)?\[([^\]]+)\]');
 
     final List<InlineSpan> spans = [];
@@ -68,11 +98,10 @@ class TajweedText extends StatelessWidget {
       final String code = match.group(1)!;
       final String content = match.group(2)!;
 
-      // Resolve the color using the theme-aware resolver
-      final Color color = TajweedColorResolver.resolveCodeFromContext(
-        context,
-        code,
-      );
+      // OPTIMIZATION: Resolve color directly using brightness instead of
+      // calling resolveCodeFromContext which calls Theme.of internally
+      final Color color =
+          TajweedColorResolver.resolveColorForCode(code, brightness);
 
       spans.add(
         TextSpan(

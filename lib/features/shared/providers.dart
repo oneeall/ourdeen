@@ -27,6 +27,11 @@ import 'package:ourdeen/features/tajweed/domain/repositories/tajweed_repository.
 import 'package:ourdeen/features/tajweed/domain/usecases/get_tajweed_preference_usecase.dart';
 import 'package:ourdeen/features/tajweed/domain/usecases/update_tajweed_preference_usecase.dart';
 import 'package:ourdeen/features/tajweed/presentation/viewmodels/tajweed_viewmodel.dart';
+import 'package:ourdeen/features/quran_reader/data/repositories/animation_repository_impl.dart';
+import 'package:ourdeen/features/quran_reader/domain/repositories/animation_repository.dart';
+import 'package:ourdeen/features/quran_reader/domain/usecases/get_animation_preference_usecase.dart';
+import 'package:ourdeen/features/quran_reader/domain/usecases/update_animation_preference_usecase.dart';
+import 'package:ourdeen/features/quran_reader/presentation/viewmodels/animation_viewmodel.dart';
 
 class Providers extends StatelessWidget {
   final Widget child;
@@ -99,6 +104,26 @@ class Providers extends StatelessWidget {
           ),
 
           // Tajweed feature providers
+          Provider<AnimationRepository>(
+            create: (_) => AnimationRepositoryImpl(),
+          ),
+          Provider<GetAnimationPreferenceUseCase>(
+            create: (context) => GetAnimationPreferenceUseCase(
+              context.read<AnimationRepository>(),
+            ),
+          ),
+          Provider<UpdateAnimationPreferenceUseCase>(
+            create: (context) => UpdateAnimationPreferenceUseCase(
+              context.read<AnimationRepository>(),
+            ),
+          ),
+          ChangeNotifierProvider<AnimationViewModel>(
+            create: (context) => AnimationViewModel(
+              context.read<GetAnimationPreferenceUseCase>(),
+              context.read<UpdateAnimationPreferenceUseCase>(),
+            )..loadPreference(),
+          ),
+
           Provider<TajweedRepository>(
             create: (_) => TajweedRepositoryImpl(),
           ),
