@@ -209,6 +209,16 @@ class _QuranReaderViewState extends State<QuranReaderView>
           tooltip: 'Tajweed Color Legend',
         ),
       ],
+      // Title that shows when collapsed - properly centered with buttons
+      title: Text(
+        viewModel.surahName.isNotEmpty
+            ? 'Surah ${viewModel.surahName}'
+            : 'Surah ${widget.surahNumber}',
+        style: TextStyle(
+          color: colorScheme.onSurface,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
       // Floating app bar that collapses on scroll
       floating: true,
       // App bar remains pinned at top when collapsed
@@ -217,10 +227,11 @@ class _QuranReaderViewState extends State<QuranReaderView>
       snap: false,
       // Expand height to show surah information
       expandedHeight: 100,
-      // Flexible space for surah title
+      // Flexible space for expanded state only
       flexibleSpace: FlexibleSpaceBar(
-        titlePadding: const EdgeInsets.only(left: 16, bottom: 16),
-        collapseMode: CollapseMode.parallax,
+        titlePadding: const EdgeInsetsDirectional.only(start: 16, bottom: 16),
+        expandedTitleScale: 1.0,
+        collapseMode: CollapseMode.pin,
         background: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -232,31 +243,34 @@ class _QuranReaderViewState extends State<QuranReaderView>
               ],
             ),
           ),
-        ),
-        title: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              viewModel.surahName.isNotEmpty
-                  ? 'Surah ${viewModel.surahName}'
-                  : 'Surah ${widget.surahNumber}',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: colorScheme.onSurface,
-              ),
-            ),
-            if (viewModel.translationEdition != null)
-              Text(
-                'Translation: ${viewModel.translationEdition!.englishName}',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: colorScheme.onSurface.withValues(alpha: 0.7),
+          // Expanded content shown only when app bar is expanded
+          child: Padding(
+            padding: const EdgeInsets.only(left: 16, bottom: 16),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  viewModel.surahName.isNotEmpty
+                      ? 'Surah ${viewModel.surahName}'
+                      : 'Surah ${widget.surahNumber}',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: colorScheme.onSurface,
+                  ),
                 ),
-              ),
-          ],
+                if (viewModel.translationEdition != null)
+                  Text(
+                    'Translation: ${viewModel.translationEdition!.englishName}',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: colorScheme.onSurface.withValues(alpha: 0.7),
+                    ),
+                  ),
+              ],
+            ),
+          ),
         ),
       ),
       elevation: 0,
