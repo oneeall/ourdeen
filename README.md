@@ -23,9 +23,9 @@ lib/
 │   │   │   └── repositories/ # Repository implementations
 │   │   ├── domain/           # Domain layer for this feature
 │   │   │   ├── entities/     # Domain entities
-│   │   │   ├── repositories/ # Repository interfaces
-│   │   │   └── usecases/     # Business use cases
-│   │   └── presentation/     # Presentation layer for this feature
+│   │   │   ├── repositories/ # Repository interfaces (Abstract data sources using factory, facade or adapter patterns.)
+│   │   │   └── usecases/     # Business use cases (Command or Strategy Pattern to isolate logic.)
+│   │   └── presentation/     # Presentation layer for this feature (Uses Observer or State Patterns to react to changes)
 │   │       ├── viewmodels/   # View models
 │   │       └── views/        # UI components
 │   ├── quran_reader/         # Quran reading feature

@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(flutter pub add:*)",
+      "Bash(flutter analyze:*)",
+      "Bash(git add:*)",
+      "mcp__web-reader__webReader",
+      "Bash(find:*)",
+      "Bash(flutter test:*)",
+      "Bash(flutter pub run build_runner:*)",
+      "Bash(fvm:*)",
+      "Bash(nc:*)",
+      "Bash(git commit:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
